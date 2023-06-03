@@ -1,1 +1,3 @@
 rootProject.name = 'finanse'
+
+include 'backend'

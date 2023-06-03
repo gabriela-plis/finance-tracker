@@ -1,10 +1,15 @@
+version: "3"
+
 services:
-  mariadb:
-    image: 'mariadb:latest'
+  mongodb:
+    image: 'mongo:6.0-jammy'
     environment:
-      - 'MARIADB_DATABASE=mydatabase'
-      - 'MARIADB_PASSWORD=secret'
-      - 'MARIADB_ROOT_PASSWORD=verysecret'
-      - 'MARIADB_USER=myuser'
+      - 'MONGO_INITDB_ROOT_USERNAME=admin'
+      - 'MONGO_INITDB_ROOT_PASSWORD=verysecret'
+      - 'MONGO_INITDB_DATABASE=database'
     ports:
-      - '3306'
+      - '27017:27017'
+    volumes:
+      - data:/data/db
+volumes:
+  data:
