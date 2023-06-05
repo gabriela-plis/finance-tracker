@@ -1,4 +1,4 @@
-package com.zaprogramujzycie.finanse.security;
+package com.zaprogramujzycie.finanse.security.auth;
 
 public record RegisterRequestDTO (
         String username,

@@ -2,6 +2,8 @@ package com.zaprogramujzycie.finanse.user;
 
 import com.zaprogramujzycie.finanse.expense.Expense;
 import com.zaprogramujzycie.finanse.income.Income;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -10,10 +12,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.List;
 
 @Data
+@AllArgsConstructor
+@Builder
 @Document(collation = "users")
 public class User {
     @Id
     private String id;
+
 
     private String username;
 
@@ -25,5 +30,6 @@ public class User {
     private List<Expense> expenses;
 
     private List<Income> incomes;
+
 
 }
