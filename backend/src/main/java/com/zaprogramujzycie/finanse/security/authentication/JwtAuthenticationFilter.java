@@ -1,4 +1,4 @@
-package com.zaprogramujzycie.finanse.security;
+package com.zaprogramujzycie.finanse.security.authentication;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

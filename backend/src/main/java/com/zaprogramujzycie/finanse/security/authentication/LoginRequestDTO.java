@@ -1,4 +1,4 @@
-package com.zaprogramujzycie.finanse.security.auth;
+package com.zaprogramujzycie.finanse.security.authentication;
 
 public record LoginRequestDTO(
         //validation

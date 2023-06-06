@@ -1,5 +1,7 @@
-package com.zaprogramujzycie.finanse.security;
+package com.zaprogramujzycie.finanse.security.config;
 
+import com.zaprogramujzycie.finanse.security.authentication.CustomUserDetailsService;
+import com.zaprogramujzycie.finanse.security.authentication.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -50,7 +52,7 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(authorizeRequests ->
                 authorizeRequests
-                    .requestMatchers("/auth/**").permitAll() //logout
+                    .requestMatchers("/auth/**").permitAll()
                     .anyRequest().authenticated()
             )
             .sessionManagement(sessionManagement ->

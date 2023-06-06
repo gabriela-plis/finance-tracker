@@ -1,5 +1,6 @@
-package com.zaprogramujzycie.finanse.security;
+package com.zaprogramujzycie.finanse.security.authentication;
 
+import com.zaprogramujzycie.finanse.security.authorization.Role;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
