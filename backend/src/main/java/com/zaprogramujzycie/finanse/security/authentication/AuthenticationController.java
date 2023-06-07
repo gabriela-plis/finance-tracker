@@ -1,8 +1,9 @@
 package com.zaprogramujzycie.finanse.security.authentication;
 
-import com.zaprogramujzycie.finanse.user.UserDTO;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,22 +15,20 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/login")
-    public ResponseEntity<UserDTO> loginUser(@RequestBody LoginRequestDTO request) {
-        AuthenticationResponse authenticationResponse = authenticationService.loginUser(request);
+    public ResponseEntity<?> loginUser(@RequestBody LoginDetailsDTO request) {
+        ResponseCookie jwtCookie = authenticationService.loginUser(request);
 
         return ResponseEntity.ok()
-            .header(HttpHeaders.SET_COOKIE, authenticationResponse.jwtCookie().toString())
-            .body(authenticationResponse.user());
+            .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+            .build();
 
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserDTO> registerUser(@RequestBody RegisterRequestDTO request) {
-        AuthenticationResponse authenticationResponse = authenticationService.registerUser(request);
+    public ResponseEntity<?> registerUser(@RequestBody @Valid RegisterDetailsDTO request) {
+        authenticationService.registerUser(request);
 
-        return ResponseEntity.ok()
-            .header(HttpHeaders.SET_COOKIE, authenticationResponse.jwtCookie().toString())
-            .body(authenticationResponse.user());
+        return ResponseEntity.ok().build();
 
     }
 
