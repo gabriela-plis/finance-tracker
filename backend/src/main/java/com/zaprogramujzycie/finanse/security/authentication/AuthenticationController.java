@@ -1,3 +1,5 @@
+package com.zaprogramujzycie.finanse.security.authentication;
+
 import com.zaprogramujzycie.finanse.security.authentication.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
