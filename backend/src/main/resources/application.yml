@@ -2,3 +2,7 @@ spring:
   data:
     mongodb:
       uri: mongodb://admin:verysecret@localhost:27017/database?authSource=admin
+      auto-index-creation: true
+
+finance-tracker:
+    jwtSecret: 72357538782F4125442A472D4B6150645367566B597033733676397924422645

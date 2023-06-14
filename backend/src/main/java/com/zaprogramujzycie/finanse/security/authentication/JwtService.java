@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +15,10 @@ import java.util.Date;
 @Service
 public class JwtService {
 
-    private static final String jwtSecretKey = "72357538782F4125442A472D4B6150645367566B597033733676397924422645";
+    @Value("${finance-tracker.jwtSecret}")
+    private String jwtSecretKey;
     private static final int jwtExpirationMs = 86400000; //24h
+    private static final String cookieName = "finance-tracker-jwt";
 
     public String getUsername (String token) {
         return getAllClaims(token).getSubject();
@@ -29,7 +32,7 @@ public class JwtService {
             .signWith(getSignInKey(), SignatureAlgorithm.HS256)
             .compact();
 
-        return ResponseCookie.from(token).path("/auth").maxAge(jwtExpirationMs).httpOnly(true).build();
+        return ResponseCookie.from(cookieName, token).path("/auth").maxAge(getExpirationInSeconds()).httpOnly(true).build();
 
     }
 
@@ -57,5 +60,9 @@ public class JwtService {
 
     private Key getSignInKey() {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecretKey));
+    }
+
+    private int getExpirationInSeconds() {
+        return jwtExpirationMs/1000;
     }
 }

@@ -18,24 +18,16 @@ public class AuthenticationService {
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticationResponse loginUser(LoginRequestDTO request) {
+    public ResponseCookie loginUser(LoginDetailsDTO request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.email(), request.password()));
 
-        UserDTO user = userService.getUserByEmail(request.email());
+        return jwtService.generateTokenCookie(new UserDetails(request.email(), request.password(), List.of(Role.USER)));
 
-        ResponseCookie token = jwtService.generateTokenCookie(new UserDetails(request.email(), request.password(), List.of(Role.USER)));
-
-        return new AuthenticationResponse(token, user);
     }
 
-    public AuthenticationResponse registerUser(RegisterRequestDTO request) {
-        //create user, save user, generate token and return (user and token)
+    public void registerUser(RegisterDetailsDTO request) {
 
-        UserDTO registeredUser = userService.registerUser(request);
-
-        ResponseCookie token = jwtService.generateTokenCookie(new UserDetails(request.email(), request.password(), List.of(Role.USER)));
-
-        return new AuthenticationResponse(token, registeredUser);
+        userService.registerUser(request);
     }
 
 }
