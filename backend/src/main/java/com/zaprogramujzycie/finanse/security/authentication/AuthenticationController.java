@@ -1,37 +1,52 @@
-package com.zaprogramujzycie.finanse.security.authentication;
-
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseCookie;
+import com.zaprogramujzycie.finanse.security.authentication.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+@Api(value = "Authentication Management")
 @RestController
-@RequiredArgsConstructor
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthenticationController {
 
-    private final AuthenticationService authenticationService;
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
-    @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody LoginDetailsDTO request) {
-        ResponseCookie jwtCookie = authenticationService.loginUser(request);
+    @Autowired
+    private JwtService jwtService;
 
-        return ResponseEntity.ok()
-            .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
-            .build();
+    @Autowired
+    private AuthenticationService authenticationService;
 
-    }
-
+    @ApiOperation(value = "User Registration")
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody @Valid RegisterDetailsDTO request) {
-        authenticationService.registerUser(request);
-
-        return ResponseEntity.ok().build();
-
+    public ResponseEntity<?> registerUser(@RequestBody RegisterDetailsDTO registerDetailsDTO) {
+        authenticationService.registerUser(registerDetailsDTO);
+        return ResponseEntity.ok("User registered successfully");
     }
 
-    //logout?
-    //refresh token?
+    @ApiOperation(value = "User Login")
+    @PostMapping("/login")
+    public ResponseEntity<?> authenticateUser(@RequestBody LoginDetailsDTO loginDetailsDTO) {
+
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginDetailsDTO.getEmail(),
+                        loginDetailsDTO.getPassword()
+                )
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        String jwt = jwtService.generateJwtToken(authentication);
+
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+        return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getUsername(), userDetails.getAuthorities()));
+    }
 }
