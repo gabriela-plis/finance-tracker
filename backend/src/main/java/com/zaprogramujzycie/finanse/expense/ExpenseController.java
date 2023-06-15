@@ -15,7 +15,7 @@ public class ExpenseController {
 
     @GetMapping
     public PagedExpensesDTO getUserExpenses(@RequestParam String userId, Pageable pageable) {
-        return expenseService.getExpenses(userId, pageable);
+        return expenseService.getUserExpenses(userId, pageable);
     }
 
     @GetMapping("/{expenseId}")
@@ -25,7 +25,7 @@ public class ExpenseController {
 
     @GetMapping("/criteria")
     public PagedExpensesDTO getUserExpensesByCriteria(@RequestParam String userId, @Valid ExpenseSortingCriteriaDTO criteria, Pageable pageable) {
-        return expenseService.getSortedExpenses(userId, criteria, pageable);
+        return expenseService.getUserSortedExpenses(userId, criteria, pageable);
     }
 
     @PostMapping

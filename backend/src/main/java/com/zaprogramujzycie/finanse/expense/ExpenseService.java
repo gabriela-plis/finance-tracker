@@ -14,7 +14,7 @@ public class ExpenseService {
     private final ExpenseRepository expenseRepository;
     private final ExpenseMapper expenseMapper;
 
-    public PagedExpensesDTO getExpenses(String userId, Pageable pageable) {
+    public PagedExpensesDTO getUserExpenses(String userId, Pageable pageable) {
         return getPagedExpensesDTO(expenseRepository.findByUserId(userId, pageable));
     }
 
@@ -25,7 +25,7 @@ public class ExpenseService {
         return  expenseMapper.toDTO(expense);
     }
 
-    public PagedExpensesDTO getSortedExpenses(String userId, ExpenseSortingCriteriaDTO criteria, Pageable pageable) {
+    public PagedExpensesDTO getUserSortedExpenses(String userId, ExpenseSortingCriteriaDTO criteria, Pageable pageable) {
         return getPagedExpensesDTO(expenseRepository.findByUserIdAndDateBetweenAndPriceBetweenAndCategoryAndOrderByDateDesc(userId, criteria.dateMin(), criteria.dateMax(), criteria.priceMin(), criteria.priceMax(), criteria.category(), pageable));
     }
 
