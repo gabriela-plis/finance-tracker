@@ -1,28 +1,38 @@
 package com.zaprogramujzycie.finanse.expense;
 
 import com.zaprogramujzycie.finanse.category.Category;
+import com.zaprogramujzycie.finanse.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
+import static org.springframework.data.mongodb.core.mapping.FieldType.DECIMAL128;
+
+@Document(collection = "expenses")
 @Data
 @AllArgsConstructor
-@Document(collection = "expenses")
+@NoArgsConstructor
 public class Expense {
     @Id
     private String id;
 
-    private LocalDateTime date;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate date;
 
+    @DBRef
     private Category category;
 
+    @Field(targetType = DECIMAL128)
     private BigDecimal price;
 
     @DBRef
-    private String userId;
+    private User user;
 }

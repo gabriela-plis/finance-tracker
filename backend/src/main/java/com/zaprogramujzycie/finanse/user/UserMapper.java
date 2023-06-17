@@ -12,20 +12,14 @@ import static org.mapstruct.ReportingPolicy.ERROR;
 public interface UserMapper {
 
     @Mapping(target = "password", ignore = true)
-    @Mapping(target = "expenses", ignore = true)
-    @Mapping(target = "incomes", ignore = true)
     User toEntity(UserDTO user);
 
 
     @Mapping(target = "roles", ignore = true)
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "expenses", ignore = true)
-    @Mapping(target = "incomes", ignore = true)
     User toEntity(RegisterDetailsDTO user);
 
     @Mapping(target = "password", ignore = true)
-    @Mapping(target = "expenses", ignore = true)
-    @Mapping(target = "incomes", ignore = true)
     void updateEntity(@MappingTarget User userToUpdate, UserDTO updatedUser);
 
     UserDTO toDTO(User user);

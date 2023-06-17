@@ -1,7 +1,5 @@
 package com.zaprogramujzycie.finanse.user;
 
-import com.zaprogramujzycie.finanse.expense.Expense;
-import com.zaprogramujzycie.finanse.income.Income;
 import com.zaprogramujzycie.finanse.security.authorization.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,10 +25,6 @@ public class User {
     private String email;
 
     private String password;
-
-    private List<Expense> expenses = new ArrayList<>();
-
-    private List<Income> incomes = new ArrayList<>();
 
     private List<Role> roles = new ArrayList<>();
 }

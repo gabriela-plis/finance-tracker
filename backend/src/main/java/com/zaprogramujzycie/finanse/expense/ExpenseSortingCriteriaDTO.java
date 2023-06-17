@@ -1,16 +1,17 @@
 package com.zaprogramujzycie.finanse.expense;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.util.List;
 
 public record ExpenseSortingCriteriaDTO(
-        LocalDateTime dateMin,
+        LocalDate dateMin,
 
-        LocalDateTime dateMax,
+        LocalDate dateMax,
 
         BigDecimal priceMin,
 
         BigDecimal priceMax,
 
-        String category
+        List<String> categoryIds
 ) { }

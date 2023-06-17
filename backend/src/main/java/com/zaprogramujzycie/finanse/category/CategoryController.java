@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/categories")
+@RequestMapping("users/{userId}/categories")
 @RequiredArgsConstructor
 public class CategoryController {
 
@@ -20,13 +20,13 @@ public class CategoryController {
 
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
-    public void addCategory(@RequestBody AddCategoryDTO request) {
-        categoryService.add(request);
+    public void addCategory(@PathVariable String userId, @RequestBody AddCategoryDTO category) {
+        categoryService.add(userId, category);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{categoryId}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public void deleteCategory(@PathVariable String id) {
-        categoryService.delete(id);
+    public void deleteCategory(@PathVariable String categoryId) {
+        categoryService.delete(categoryId);
     }
 }

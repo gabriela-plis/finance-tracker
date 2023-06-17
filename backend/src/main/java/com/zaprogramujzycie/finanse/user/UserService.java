@@ -2,7 +2,7 @@ package com.zaprogramujzycie.finanse.user;
 
 import com.zaprogramujzycie.finanse.security.authentication.RegisterDetailsDTO;
 import com.zaprogramujzycie.finanse.security.authorization.Role;
-import com.zaprogramujzycie.finanse.utils.UserNotFoundException;
+import com.zaprogramujzycie.finanse.utils.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -32,4 +32,8 @@ public class UserService {
         return userMapper.toDTO(userEntity);
     }
 
+    public User getUserById(String id) {
+        return userRepository.findById(id)
+            .orElseThrow(UserNotFoundException::new);
+    }
 }

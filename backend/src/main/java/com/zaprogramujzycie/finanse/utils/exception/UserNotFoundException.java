@@ -1,4 +1,4 @@
-package com.zaprogramujzycie.finanse.utils;
+package com.zaprogramujzycie.finanse.utils.exception;
 
 public class UserNotFoundException extends RuntimeException {
     public UserNotFoundException(String errorMessage) {

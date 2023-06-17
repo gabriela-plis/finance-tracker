@@ -1,5 +1,7 @@
 package com.zaprogramujzycie.finanse.expense;
 
+import com.zaprogramujzycie.finanse.user.UserService;
+import com.zaprogramujzycie.finanse.utils.converter.StringListToObjectIdListConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,8 +16,12 @@ public class ExpenseService {
     private final ExpenseRepository expenseRepository;
     private final ExpenseMapper expenseMapper;
 
+    private final UserService userService;
+
+    private final StringListToObjectIdListConverter converter;
+
     public PagedExpensesDTO getUserExpenses(String userId, Pageable pageable) {
-        return getPagedExpensesDTO(expenseRepository.findByUserId(userId, pageable));
+        return getPagedExpensesDTO(expenseRepository.findByUser_Id(userId, pageable));
     }
 
     public ExpenseDTO getExpense(String expenseId) {
@@ -26,7 +32,14 @@ public class ExpenseService {
     }
 
     public PagedExpensesDTO getUserSortedExpenses(String userId, ExpenseSortingCriteriaDTO criteria, Pageable pageable) {
-        return getPagedExpensesDTO(expenseRepository.findByUserIdAndDateBetweenAndPriceBetweenAndCategoryAndOrderByDateDesc(userId, criteria.dateMin(), criteria.dateMax(), criteria.priceMin(), criteria.priceMax(), criteria.category(), pageable));
+        Page<Expense> expenses;
+        if (criteria.categoryIds() == null) {
+            expenses = expenseRepository.findByUserIdAndDateBetweenAndPriceBetween(userId, criteria.dateMin(), criteria.dateMax(), criteria.priceMin(), criteria.priceMax(), pageable);
+        } else {
+            expenses = expenseRepository.findByUserIdAndDateBetweenAndPriceBetweenAndCategoryIdIn(userId, criteria.dateMin(), criteria.dateMax(), criteria.priceMin(), criteria.priceMax(), converter.convert(criteria.categoryIds()), pageable);
+        }
+
+        return getPagedExpensesDTO(expenses);
     }
 
     private PagedExpensesDTO getPagedExpensesDTO(Page<Expense> pagedExpenses) {
@@ -37,15 +50,17 @@ public class ExpenseService {
 
 
     public void createExpense(String userId, AddExpenseDTO expenseToAdd) {
-        //with userId addExpenseDTO?
-        Expense expense = expenseMapper.toEntity(expenseToAdd);
-        expense.setUserId(userId);
+            Expense expense = expenseMapper.toEntity(expenseToAdd);
+            expense.setUser(userService.getUserById(userId));
 
-        expenseRepository.insert(expense);
+            expenseRepository.insert(expense);
     }
 
-    public void updateExpense(ExpenseDTO expense) {
-        expenseRepository.save(expenseMapper.toEntity(expense));
+    public void updateExpense(String userId, ExpenseDTO expenseToUpdate) {
+            Expense expense = expenseMapper.toEntity(expenseToUpdate);
+            expense.setUser(userService.getUserById(userId));
+
+            expenseRepository.save(expense);
     }
 
     public void deleteExpense(String expenseId) {
