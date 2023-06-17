@@ -1,23 +1,30 @@
 package com.zaprogramujzycie.finanse.category;
-
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import com.zaprogramujzycie.finanse.category.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+@Api(value = "Category Management")
 @RestController
+
 @RequestMapping("users/{userId}/categories")
 @RequiredArgsConstructor
 public class CategoryController {
 
     private final CategoryService categoryService;
+    private final CategoryMapper categoryMapper;
 
-    @GetMapping
-    public List<CategoryDTO> getAllCategories() {
-        return categoryService.getAll();
+    @Autowired
+    public CategoryController(CategoryService categoryService, CategoryMapper categoryMapper) {
+        this.categoryService = categoryService;
+        this.categoryMapper = categoryMapper;
     }
 
+    @ApiOperation(value = "Add a category")
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
     public void addCategory(@PathVariable String userId, @RequestBody AddCategoryDTO category) {
