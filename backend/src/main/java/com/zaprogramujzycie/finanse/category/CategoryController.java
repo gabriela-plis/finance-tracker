@@ -10,7 +10,9 @@ import java.util.stream.Collectors;
 
 @Api(value = "Category Management")
 @RestController
-@RequestMapping("/categories")
+
+@RequestMapping("users/{userId}/categories")
+@RequiredArgsConstructor
 public class CategoryController {
 
     private final CategoryService categoryService;
@@ -24,39 +26,14 @@ public class CategoryController {
 
     @ApiOperation(value = "Add a category")
     @PostMapping
-    public CategoryDTO createCategory(@RequestBody AddCategoryDTO addCategoryDTO) {
-        Category newCategory = categoryMapper.mapToAddCategory(addCategoryDTO);
-        Category createdCategory = categoryService.save(newCategory);
-        return categoryMapper.mapToCategoryDTO(createdCategory);
+    @ResponseStatus(code = HttpStatus.CREATED)
+    public void addCategory(@PathVariable String userId, @RequestBody AddCategoryDTO category) {
+        categoryService.add(userId, category);
     }
 
-    @ApiOperation(value = "View a list of available categories")
-    @GetMapping
-    public List<CategoryDTO> getCategories() {
-        List<Category> categories = categoryService.findAll();
-        return categories.stream()
-                .map(categoryMapper::mapToCategoryDTO)
-                .collect(Collectors.toList());
-    }
-
-    @ApiOperation(value = "Get a category by Id")
-    @GetMapping("/{id}")
-    public CategoryDTO getCategory(@PathVariable String id) {
-        Category category = categoryService.findById(id);
-        return categoryMapper.mapToCategoryDTO(category);
-    }
-
-    @ApiOperation(value = "Update a category")
-    @PutMapping("/{id}")
-    public CategoryDTO updateCategory(@PathVariable String id, @RequestBody CategoryDTO categoryDTO) {
-        Category updatedCategory = categoryMapper.mapToCategory(categoryDTO);
-        Category savedCategory = categoryService.update(id, updatedCategory);
-        return categoryMapper.mapToCategoryDTO(savedCategory);
-    }
-
-    @ApiOperation(value = "Delete a category")
-    @DeleteMapping("/{id}")
-    public void deleteCategory(@PathVariable String id) {
-        categoryService.delete(id);
+    @DeleteMapping("/{categoryId}")
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    public void deleteCategory(@PathVariable String categoryId) {
+        categoryService.delete(categoryId);
     }
 }

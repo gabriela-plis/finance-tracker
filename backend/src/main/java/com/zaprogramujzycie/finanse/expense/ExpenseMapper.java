@@ -1,5 +1,6 @@
 package com.zaprogramujzycie.finanse.expense;
 
+import com.zaprogramujzycie.finanse.category.CategoryMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -7,14 +8,13 @@ import java.util.List;
 
 import static org.mapstruct.ReportingPolicy.ERROR;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ERROR)
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ERROR, uses = CategoryMapper.class)
 public interface ExpenseMapper {
 
-    @Mapping(target = "userId", ignore = true)
-    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "user", ignore = true)
     Expense toEntity(ExpenseDTO expense);
 
-    @Mapping(target = "userId", ignore = true)
+    @Mapping(target = "user", ignore = true)
     @Mapping(target = "id", ignore = true)
     Expense toEntity(AddExpenseDTO expense);
 
