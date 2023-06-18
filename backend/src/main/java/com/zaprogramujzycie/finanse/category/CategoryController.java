@@ -4,25 +4,20 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Api(value = "Category Management")
 @RestController
-
 @RequestMapping("users/{userId}/categories")
 @RequiredArgsConstructor
 public class CategoryController {
 
     private final CategoryService categoryService;
     private final CategoryMapper categoryMapper;
-
-    @Autowired
-    public CategoryController(CategoryService categoryService, CategoryMapper categoryMapper) {
-        this.categoryService = categoryService;
-        this.categoryMapper = categoryMapper;
-    }
 
     @ApiOperation(value = "Add a category")
     @PostMapping
