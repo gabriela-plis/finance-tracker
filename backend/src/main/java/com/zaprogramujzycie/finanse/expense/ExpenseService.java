@@ -2,6 +2,7 @@ package com.zaprogramujzycie.finanse.expense;
 
 import com.zaprogramujzycie.finanse.user.UserService;
 import com.zaprogramujzycie.finanse.utils.converter.StringListToObjectIdListConverter;
+import com.zaprogramujzycie.finanse.utils.exception.DocumentNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +27,7 @@ public class ExpenseService {
 
     public ExpenseDTO getExpense(String expenseId) {
         Expense expense = expenseRepository.findById(expenseId)
-            .orElseThrow();
+            .orElseThrow(DocumentNotFoundException::new);
 
         return  expenseMapper.toDTO(expense);
     }
@@ -41,13 +42,6 @@ public class ExpenseService {
 
         return getPagedExpensesDTO(expenses);
     }
-
-    private PagedExpensesDTO getPagedExpensesDTO(Page<Expense> pagedExpenses) {
-        List<ExpenseDTO> expenses = expenseMapper.toDTOs(pagedExpenses.getContent());
-
-        return new PagedExpensesDTO(pagedExpenses.getTotalPages(), pagedExpenses.getNumber(), expenses);
-    }
-
 
     public void createExpense(String userId, AddExpenseDTO expenseToAdd) {
             Expense expense = expenseMapper.toEntity(expenseToAdd);
@@ -66,4 +60,11 @@ public class ExpenseService {
     public void deleteExpense(String expenseId) {
         expenseRepository.deleteById(expenseId);
     }
+
+    private PagedExpensesDTO getPagedExpensesDTO(Page<Expense> pagedExpenses) {
+        List<ExpenseDTO> expenses = expenseMapper.toDTOs(pagedExpenses.getContent());
+
+        return new PagedExpensesDTO(pagedExpenses.getTotalPages(), pagedExpenses.getNumber(), expenses);
+    }
+
 }

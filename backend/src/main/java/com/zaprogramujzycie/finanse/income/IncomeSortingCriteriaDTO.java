@@ -1,17 +1,17 @@
 package com.zaprogramujzycie.finanse.income;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
+import java.time.LocalDateTime;
 
 public record IncomeSortingCriteriaDTO(
-        LocalDate dateMin,
 
-        LocalDate dateMax,
+        LocalDateTime dateMin,
 
-        BigDecimal priceMin,
+        LocalDateTime dateMax,
 
-        BigDecimal priceMax,
+        BigDecimal amountMin,
 
-        List<String> categoryIds
+        BigDecimal amountMax,
+
+        String keyword
 ) { }

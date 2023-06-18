@@ -1,22 +1,12 @@
 package com.zaprogramujzycie.finanse.income;
 
-import com.zaprogramujzycie.finanse.category.CategoryDTO;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-import org.springframework.format.annotation.DateTimeFormat;
-
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 public record AddIncomeDTO(
-        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-        LocalDate date,
+    LocalDateTime date,
 
-        @Valid
-        CategoryDTO category,
+    BigDecimal amount,
 
-        @NotNull
-        @Min(0)
-        BigDecimal price
-) {
-}
+    String description
+) { }

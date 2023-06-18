@@ -1,14 +1,14 @@
 package com.zaprogramujzycie.finanse.category;
-import com.zaprogramujzycie.finanse.category.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 @Api(value = "Category Management")
 @RestController
@@ -17,9 +17,18 @@ import java.util.stream.Collectors;
 public class CategoryController {
 
     private final CategoryService categoryService;
-    private final CategoryMapper categoryMapper;
 
-    @ApiOperation(value = "Add a category")
+    @GetMapping
+    public List<CategoryDTO> getUserCategories(@PathVariable String userId) {
+        return categoryService.getUserCategories(userId);
+    }
+
+    @GetMapping("/{categoryId}")
+    public CategoryDTO getCategory(@PathVariable String categoryId) {
+        return categoryService.getCategory(categoryId);
+    }
+
+  @ApiOperation(value = "Add a category")
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
     public void addCategory(@PathVariable String userId, @RequestBody AddCategoryDTO category) {
