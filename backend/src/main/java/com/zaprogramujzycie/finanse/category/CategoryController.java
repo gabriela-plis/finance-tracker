@@ -4,13 +4,14 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
 
 @Api(value = "Category Management")
 @RestController
-
 @RequestMapping("users/{userId}/categories")
 @RequiredArgsConstructor
 public class CategoryController {
@@ -27,7 +28,7 @@ public class CategoryController {
         return categoryService.getCategory(categoryId);
     }
 
-    @ApiOperation(value = "Add a category")
+  @ApiOperation(value = "Add a category")
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
     public void addCategory(@PathVariable String userId, @RequestBody AddCategoryDTO category) {

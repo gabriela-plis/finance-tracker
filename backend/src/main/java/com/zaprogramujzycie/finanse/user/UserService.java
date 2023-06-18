@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -35,5 +37,18 @@ public class UserService {
     public User getUserById(String id) {
         return userRepository.findById(id)
             .orElseThrow(DocumentNotFoundException::new);
+    }
+
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
+
+    public void delete(String id) {
+        userRepository.deleteById(id);
+    }
+
+    public User save(User existingUser) {
+        userRepository.save(existingUser);
+        return existingUser;
     }
 }

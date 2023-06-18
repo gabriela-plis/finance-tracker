@@ -14,5 +14,4 @@ public record IncomeSortingCriteriaDTO(
         BigDecimal amountMax,
 
         String keyword
-
 ) { }

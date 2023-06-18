@@ -2,6 +2,7 @@ package com.zaprogramujzycie.finanse.income;
 
 import com.zaprogramujzycie.finanse.user.UserService;
 import com.zaprogramujzycie.finanse.utils.exception.DocumentNotFoundException;
+import com.zaprogramujzycie.finanse.utils.converter.StringListToObjectIdListConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +20,7 @@ public class IncomeService {
     private final UserService userService;
 
     public PagedIncomesDTO getUserIncomes(String userId, Pageable pageable) {
+
         return getPagedIncomesDTO(incomeRepository.findByUser_Id(userId, pageable));
     }
 

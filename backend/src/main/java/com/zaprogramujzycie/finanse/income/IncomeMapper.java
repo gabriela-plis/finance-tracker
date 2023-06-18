@@ -1,10 +1,9 @@
 package com.zaprogramujzycie.finanse.income;
 
+import com.zaprogramujzycie.finanse.category.CategoryMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-
 import java.util.List;
-
 import static org.mapstruct.ReportingPolicy.ERROR;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ERROR)
