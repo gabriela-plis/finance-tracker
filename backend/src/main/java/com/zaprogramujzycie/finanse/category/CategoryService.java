@@ -1,6 +1,7 @@
 package com.zaprogramujzycie.finanse.category;
 
 import com.zaprogramujzycie.finanse.user.UserService;
+import com.zaprogramujzycie.finanse.utils.exception.DocumentNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +15,8 @@ public class CategoryService {
 
     private final UserService userService;
 
-    public List<CategoryDTO> getAll() {
-        return categoryMapper.toDTOs(categoryRepository.findAll());
+    public List<CategoryDTO> getUserCategories(String userId) {
+        return categoryMapper.toDTOs(categoryRepository.findByOwner_Id(userId));
     }
 
     public void delete(String id) {
@@ -29,4 +30,10 @@ public class CategoryService {
         categoryRepository.insert(category);
     }
 
+    public CategoryDTO getCategory(String categoryId) {
+        Category category = categoryRepository.findById(categoryId)
+            .orElseThrow(DocumentNotFoundException::new);
+
+        return categoryMapper.toDTO(category);
+    }
 }
