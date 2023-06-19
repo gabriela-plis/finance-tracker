@@ -37,14 +37,14 @@ export default function Page() {
         <section className={`min-h-screen flex items-center justify-center ${styles.login}`}>
           <div className={`max-w-md w-full space-y-8 bg-white p-8 rounded shadow-lg ${styles.loginContainer}`}>
             <div>
-              <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Sign in to your account</h2>
+              <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Zaloguj się do konta</h2>
             </div>
             <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
               <input type="hidden" name="remember" defaultValue="true" />
               <div className="rounded-md shadow-sm -space-y-px">
                 <div className="flex flex-col gap-2">
                   <label htmlFor="email-address" className="sr-only">
-                    Email address
+                    Adres email
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -59,15 +59,15 @@ export default function Page() {
                       className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${
                         errors.email ? 'border-red-300' : 'border-gray-300'
                       } placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm ${styles.input}`}
-                      placeholder="Email address"
+                      placeholder="Adres email"
                     />
                     {errors.email && (
-                      <span className={`${styles.error} text-red-500 text-sm`}>This field is required</span>
+                      <span className={`${styles.error} text-red-500 text-sm`}>Te pole jest wymagane</span>
                     )}
                   </div>
                   <div>
                     <label htmlFor="password" className="sr-only">
-                      Password
+                      Hasło
                     </label>
                     <div className="relative mb-2">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -82,18 +82,18 @@ export default function Page() {
                         className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${
                           errors.password ? 'border-red-300' : 'border-gray-300'
                         } placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm ${styles.input}`}
-                        placeholder="Password"
+                        placeholder="Twoje hasło"
                       />
                     </div>
                     {errors.password && (
-                      <span className={`${styles.error} text-red-500 text-sm`}>This field is required</span>
+                      <span className={`${styles.error} text-red-500 text-sm`}>To pole jest wymagane</span>
                     )}
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="text-sm mb-2">
                     <Link href="/auth/reset" className="font-medium text-indigo-600 hover:text-indigo-500">
-                      Forgot your password?
+                        Zapomniałeś hasła?
                     </Link>
                   </div>
                 </div>
@@ -101,9 +101,9 @@ export default function Page() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${
-                      loading && 'opacity-50 cursor-not-allowed'
-                    } ${styles.submit}`}
+                    className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-gradient-to-r from-indigo-600 to-purple-500 hover:from-indigo-700 hover:to-purple-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${
+                        loading && 'opacity-50 cursor-not-allowed'
+                      }`}
                   >
                     <span className="absolute left-0 inset-y-0 flex items-center pl-3">
                       <svg
@@ -116,7 +116,7 @@ export default function Page() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                       </svg>
                     </span>
-                    {loading ? 'Logging in...' : 'Sign in'}
+                    {loading ? 'Logowanie...' : 'Zaloguj się'}
                   </button>
                 </div>
               </div>
