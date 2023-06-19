@@ -1,11 +1,11 @@
 import { HiOutlineCurrencyDollar, HiOutlineChartBar, HiOutlineUsers } from 'react-icons/hi';
-
+import styles from './Dashboard.module.css'
 
 export default function Page() {
     return (
         <div className='flex min-w-full'>
             <div className="flex-grow bg-gray-100">
-                <header className="bg-white shadow">
+                <header className={`bg-white ${styles.shadowBottom}`}>
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <h1 className="text-2xl font-semibold text-gray-900 py-4">Twój personalny tracker wydatków i przychodów</h1>
                     </div>
