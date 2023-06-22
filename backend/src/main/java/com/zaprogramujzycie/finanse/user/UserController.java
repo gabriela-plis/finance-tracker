@@ -21,7 +21,7 @@ public class UserController {
     private final UserMapper userMapper;
 
     @ApiOperation(value = "Add a user")
-    @PostMapping
+    @PostMapping("/{id})/add")
     @ResponseStatus(code = HttpStatus.CREATED)
     public UserDTO createUser(@RequestBody UserDTO userDTO) {
         User newUser = userMapper.toEntity(userDTO);
@@ -30,7 +30,7 @@ public class UserController {
     }
 
     @ApiOperation(value = "View a list of available users")
-    @GetMapping
+    @GetMapping("/{id}/list")
     public List<UserDTO> getUsers() {
         List<User> users = userService.findAll();
         return userMapper.toDTOs(users);
@@ -44,7 +44,7 @@ public class UserController {
     }
 
     @ApiOperation(value = "Update a user")
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/update")
     public UserDTO updateUser(@PathVariable String id, @RequestBody UserDTO userDTO) {
         User existingUser = userService.getUserById(id);
         userMapper.updateEntity(existingUser, userDTO);
@@ -53,7 +53,7 @@ public class UserController {
     }
 
     @ApiOperation(value = "Delete a user")
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}/delete")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable String id) {
         userService.delete(id);
