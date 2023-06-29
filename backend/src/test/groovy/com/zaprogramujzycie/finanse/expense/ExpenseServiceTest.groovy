@@ -147,19 +147,19 @@ class ExpenseServiceTest extends Specification {
     }
 
     private Expense getExpense() {
-        return new Expense("1", LocalDate.of(2020, 1, 1), new Category("1", "Food", null), new BigDecimal(100.50), getUser())
+        return new Expense("1", LocalDate.of(2020, 1, 1), new Category("1", "Food", null), BigDecimal.valueOf(100.50), getUser())
     }
 
     private Expense getExpense(String id) {
-        return new Expense(id, LocalDate.of(2020, 1, 1), new Category("1", "Food", null), new BigDecimal(100.50), getUser())
+        return new Expense(id, LocalDate.of(2020, 1, 1), new Category("1", "Food", null), BigDecimal.valueOf(100.50), getUser())
     }
 
     private ExpenseDTO getExpenseDTO() {
-        new ExpenseDTO("1", LocalDate.of(2020, 1, 1), new CategoryDTO("1", "Food"), new BigDecimal(100.50))
+        new ExpenseDTO("1", LocalDate.of(2020, 1, 1), new CategoryDTO("1", "Food"), BigDecimal.valueOf(100.50))
     }
 
     private ExpenseDTO getExpenseDTO(String id) {
-        new ExpenseDTO(id, LocalDate.of(2020, 1, 1), new CategoryDTO("1", "Food"), new BigDecimal(100.50))
+        new ExpenseDTO(id, LocalDate.of(2020, 1, 1), new CategoryDTO("1", "Food"), BigDecimal.valueOf(100.50))
     }
 
     private User getUser() {

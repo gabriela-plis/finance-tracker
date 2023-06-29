@@ -2,7 +2,6 @@ package com.zaprogramujzycie.finanse.category
 
 import com.zaprogramujzycie.finanse.security.authorization.Role
 import com.zaprogramujzycie.finanse.user.User
-import com.zaprogramujzycie.finanse.user.UserDTO
 import com.zaprogramujzycie.finanse.user.UserService
 import com.zaprogramujzycie.finanse.utils.exception.DocumentNotFoundException
 import org.mapstruct.factory.Mappers
