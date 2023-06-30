@@ -1,6 +1,5 @@
 package com.zaprogramujzycie.finanse.income;
 
-import com.zaprogramujzycie.finanse.income.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -15,8 +14,8 @@ public class IncomeController {
     private final IncomeService incomeService;
 
     @GetMapping
-    public PagedIncomeDTO getUserIncome(@PathVariable String userId, Pageable pageable) {
-        return incomeService.getUserIncome(userId, pageable);
+    public PagedIncomesDTO getUserIncome(@PathVariable String userId, Pageable pageable) {
+        return incomeService.getUserIncomes(userId, pageable);
     }
 
     @GetMapping("/{incomeId}")
@@ -25,8 +24,8 @@ public class IncomeController {
     }
 
     @GetMapping("/criteria")
-    public PagedIncomeDTO getUserIncomeByCriteria(@PathVariable String userId, @Valid IncomeSortingCriteriaDTO criteria, Pageable pageable) {
-        return incomeService.getUserSortedIncome(userId, criteria, pageable);
+    public PagedIncomesDTO getUserIncomeByCriteria(@PathVariable String userId, @Valid IncomeSortingCriteriaDTO criteria, Pageable pageable) {
+        return incomeService.getUserSortedIncomes(userId, criteria, pageable);
     }
 
     @PostMapping

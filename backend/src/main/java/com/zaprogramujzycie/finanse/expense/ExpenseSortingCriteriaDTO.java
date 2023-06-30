@@ -5,13 +5,13 @@ import java.time.LocalDate;
 import java.util.List;
 
 public record ExpenseSortingCriteriaDTO(
-        LocalDate dateMin,
+    LocalDate dateMin,
 
-        LocalDate dateMax,
+    LocalDate dateMax,
 
-        BigDecimal priceMin,
+    BigDecimal priceMin,
 
-        BigDecimal priceMax,
+    BigDecimal priceMax,
 
-        List<String> categoryIds
+    List<String> categoryIds
 ) { }

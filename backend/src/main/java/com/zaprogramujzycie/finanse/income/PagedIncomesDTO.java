@@ -4,10 +4,10 @@ import java.util.List;
 
 public record PagedIncomesDTO(
 
-        int totalPages,
+    int totalPages,
 
-        int currentPage,
+    int currentPage,
 
-        List<IncomeDTO> expenses
+    List<IncomeDTO> expenses
 
 ) { }

@@ -5,13 +5,14 @@ import java.time.LocalDate;
 
 public record IncomeSortingCriteriaDTO(
 
-        LocalDate dateMin,
+    LocalDate dateMin,
 
-        LocalDate dateMax,
+    LocalDate dateMax,
 
-        BigDecimal amountMin,
+    BigDecimal amountMin,
 
-        BigDecimal amountMax,
+    BigDecimal amountMax,
 
-        String keyword
+    String keyword
+
 ) { }
