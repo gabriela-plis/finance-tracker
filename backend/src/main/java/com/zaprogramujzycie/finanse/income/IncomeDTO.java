@@ -1,13 +1,13 @@
 package com.zaprogramujzycie.finanse.income;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public record IncomeDTO (
 
     String id,
 
-    LocalDateTime date,
+    LocalDate date,
 
     BigDecimal amount,
 

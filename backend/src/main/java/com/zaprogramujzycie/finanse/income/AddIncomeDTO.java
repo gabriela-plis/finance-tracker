@@ -1,10 +1,10 @@
 package com.zaprogramujzycie.finanse.income;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public record AddIncomeDTO(
-    LocalDateTime date,
+    LocalDate date,
 
     BigDecimal amount,
 

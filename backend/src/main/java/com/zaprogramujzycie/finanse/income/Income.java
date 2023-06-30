@@ -3,11 +3,8 @@ package com.zaprogramujzycie.finanse.income;
 import com.zaprogramujzycie.finanse.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.data.annotation.Id;
-
-import com.zaprogramujzycie.finanse.user.User;
-import com.zaprogramujzycie.finanse.category.Category;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -30,11 +27,10 @@ public class Income {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate date;
 
-    @DBRef
-    private Category category;
-
     @Field(targetType = DECIMAL128)
-    private BigDecimal price;
+    private BigDecimal amount;
+
+    private String description;
 
     @DBRef
     private User user;
