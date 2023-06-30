@@ -3,6 +3,7 @@ version: "3"
 services:
   mongodb:
     image: 'mongo:6.0-jammy'
+    container_name: mongo-db
     environment:
       - 'MONGO_INITDB_ROOT_USERNAME=admin'
       - 'MONGO_INITDB_ROOT_PASSWORD=verysecret'
@@ -11,5 +12,21 @@ services:
       - '27017:27017'
     volumes:
       - data:/data/db
+    networks:
+      - finance-tracker-network
+  app:
+    depends_on:
+      - mongodb
+    build: ../backend
+    container_name: app
+    ports:
+      - "8080:8080"
+    networks:
+      - finance-tracker-network
+
+networks:
+  finance-tracker-network:
+    driver: bridge
+
 volumes:
   data:
