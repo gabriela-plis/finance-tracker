@@ -2,6 +2,7 @@ package com.zaprogramujzycie.finanse.expense;
 
 import com.zaprogramujzycie.finanse.category.CategoryDTO;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -22,6 +23,6 @@ public record ExpenseDTO(
     CategoryDTO category,
 
     @NotNull
-    @Min(0)
+    @DecimalMin(value = "0.0", inclusive = false)
     BigDecimal price
 ) { }

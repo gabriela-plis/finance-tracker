@@ -1,5 +1,6 @@
 package com.zaprogramujzycie.finanse.income;
 
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -14,7 +15,7 @@ public record AddIncomeDTO(
     LocalDate date,
 
     @NotNull
-    @Min(0)
+    @DecimalMin(value = "0.0", inclusive = false)
     BigDecimal amount,
 
     @Size(max = 100, message = "Exceeded maximum length for the description")
