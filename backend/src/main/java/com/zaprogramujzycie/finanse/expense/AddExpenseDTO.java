@@ -11,6 +11,7 @@ import java.time.LocalDate;
 
 public record AddExpenseDTO(
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @NotNull
     LocalDate date,
 
     @Valid

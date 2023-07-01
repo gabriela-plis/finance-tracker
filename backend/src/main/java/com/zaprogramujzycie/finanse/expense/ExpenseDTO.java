@@ -11,13 +11,12 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public record ExpenseDTO(
-
     @NotBlank
     String id,
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @NotNull
     LocalDate date,
-
 
     @Valid
     CategoryDTO category,

@@ -1,16 +1,19 @@
-package com.zaprogramujzycie.finanse.utils.validation;
+package com.zaprogramujzycie.finanse.utils.validation.email;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
 import java.lang.annotation.*;
 
+/**
+ * The annotated element must not be null.
+ */
 @Documented
-@Constraint(validatedBy = PasswordConstraintValidator.class)
+@Constraint(validatedBy = EmailConstraintValidator.class)
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ValidPassword {
-    String message() default "Invalid Password";
+public @interface ValidEmail {
+    String message() default "Invalid Email";
 
     Class<?>[] groups() default {};
 
