@@ -2,6 +2,7 @@ package com.zaprogramujzycie.finanse.utils.exception;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,5 +23,10 @@ public class ResponseEntityExceptionHandler {
     })
     public ResponseEntity<?> handleExceptionsForFailedDTOValidation() {
         return new ResponseEntity<>(UNPROCESSABLE_ENTITY);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<?> handleBadCredentialsException() {
+        return new ResponseEntity<>(UNAUTHORIZED);
     }
 }

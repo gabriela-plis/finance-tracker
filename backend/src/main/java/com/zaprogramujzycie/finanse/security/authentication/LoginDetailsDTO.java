@@ -4,7 +4,7 @@ import com.zaprogramujzycie.finanse.utils.validation.email.ValidEmail;
 import com.zaprogramujzycie.finanse.utils.validation.password.ValidPassword;
 
 public record LoginDetailsDTO(
-        @ValidEmail  //TODO check correctness
+        @ValidEmail
         String email,
 
         @ValidPassword
