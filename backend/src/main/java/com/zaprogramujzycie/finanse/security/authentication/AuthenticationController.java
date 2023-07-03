@@ -2,6 +2,7 @@ package com.zaprogramujzycie.finanse.security.authentication;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -18,14 +19,14 @@ public class AuthenticationController {
 
     @ApiOperation(value = "User Registration")
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody RegisterDetailsDTO registerDetails) {
+    public ResponseEntity<?> registerUser(@RequestBody @Valid RegisterDetailsDTO registerDetails) {
         authenticationService.registerUser(registerDetails);
         return ResponseEntity.ok("User registered successfully");
     }
 
     @ApiOperation(value = "User Login")
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@RequestBody LoginDetailsDTO loginDetails) {
+    public ResponseEntity<?> authenticateUser(@RequestBody @Valid LoginDetailsDTO loginDetails) {
         ResponseCookie jwtCookie = authenticationService.loginUser(loginDetails);
 
         return ResponseEntity.ok()

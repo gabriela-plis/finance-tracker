@@ -1,4 +1,4 @@
-package com.zaprogramujzycie.finanse.utils.validation;
+package com.zaprogramujzycie.finanse.utils.validation.password;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -10,6 +10,10 @@ public class PasswordConstraintValidator implements ConstraintValidator<ValidPas
 
     @Override
     public boolean isValid(String password, ConstraintValidatorContext context) {
+        if (password == null) {
+            return false;
+        }
+
         PasswordValidator validator = new PasswordValidator(List.of(
            new LengthRule(8,24),
            new CharacterRule(EnglishCharacterData.UpperCase, 1),
