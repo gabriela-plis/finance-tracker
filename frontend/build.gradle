@@ -1,0 +1,17 @@
+plugins {
+    id 'java'
+}
+
+group = rootProject.group
+version = rootProject.version
+
+tasks.register('buildFrontend', Exec) {
+    workingDir = projectDir
+    commandLine("npm", "run", "build")
+}
+
+jar {
+    dependsOn("buildFrontend")
+    from("$projectDir/out").into("static")
+}
+
