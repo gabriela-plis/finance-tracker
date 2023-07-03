@@ -4,26 +4,44 @@ info:
   version: 1.0.0
 
 paths:
-  /users/{id}:
+  /users:
     get:
-      operationId: "getUserById"
+      operationId: "getUsers"
       parameters:
         - name: id
           in: path
           required: true
           schema:
             type: string
+        - $ref: "#/components/parameters/SizeParam"
+        - $ref: "#/components/parameters/PageParam"
       responses:
         '200':
           description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+  /users/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+    get:
+      operationId: "getUserById"
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
     put:
       operationId: "updateUser"
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
       requestBody:
         required: true
         content:
@@ -35,27 +53,9 @@ paths:
           description: Successful operation
     delete:
       operationId: "deleteUser"
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
       responses:
         '204':
           description: Successfully deleted
-  /api/auth:
-    post:
-      operationId: "auth"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Auth'
-      responses:
-        '200':
-          description: Successful operation
   /api/auth/register:
     post:
       operationId: "register"
@@ -64,7 +64,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Register'
+              $ref: '#/components/schemas/RegisterDetails'
       responses:
         '201':
           description: Successfully created
@@ -76,69 +76,54 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Login'
+              $ref: '#/components/schemas/LoginDetails'
       responses:
         '200':
           description: Successful operation
   /users/{userId}/categories:
+    parameters:
+      - $ref: '#/components/parameters/UserIdPathParam'
     get:
       operationId: "getCategoriesForUser"
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          schema:
-            type: string
       responses:
         '200':
           description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Category"
     post:
       operationId: "createCategoryForUser"
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          schema:
-            type: string
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Category'
+              $ref: '#/components/schemas/AddCategory'
       responses:
         '201':
           description: Successfully created
   /users/{userId}/categories/{categoryId}:
+    parameters:
+      - $ref: '#/components/parameters/UserIdPathParam'
+      - in: path
+        name: categoryId
+        required: true
+        schema:
+          type: string
     get:
       operationId: "getCategoryForUser"
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: categoryId
-          in: path
-          required: true
-          schema:
-            type: string
       responses:
         '200':
           description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
     put:
       operationId: "updateCategoryForUser"
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: categoryId
-          in: path
-          required: true
-          schema:
-            type: string
       requestBody:
         required: true
         content:
@@ -150,53 +135,362 @@ paths:
           description: Successfully created
     delete:
       operationId: "deleteCategoryForUser"
+      responses:
+        '204':
+          description: Successfully deleted
+  /users/{userId}/expenses:
+    parameters:
+      - $ref: '#/components/parameters/UserIdPathParam'
+    get:
+      operationId: "getExpensesForUser"
       parameters:
-        - name: userId
-          in: path
-          required: true
+        - $ref: "#/components/parameters/SizeParam"
+        - $ref: "#/components/parameters/PageParam"
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PagedExpenses"
+    post:
+      operationId: "createExpenseForUser"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddExpense'
+      responses:
+        '201':
+          description: Successfully created
+  /users/{userId}/expenses/{expenseId}:
+    parameters:
+      - $ref: '#/components/parameters/UserIdPathParam'
+      - in: path
+        name: expenseId
+        required: true
+        schema:
+          type: string
+    get:
+      operationId: "getExpenseForUser"
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Expense"
+    put:
+      operationId: "updateExpenseForUser"
+      responses:
+        '200':
+          description: Successful operation
+    delete:
+      operationId: "deleteExpenseForUser"
+      responses:
+        '204':
+          description: Successfully deleted
+  /users/{userId}/expenses/criteria:
+    parameters:
+      - $ref: '#/components/parameters/UserIdPathParam'
+    get:
+      operationId: "getExpenseForUserBySortingCriteria"
+      parameters:
+        - name: dateMin
+          in: query
+          required: false
           schema:
             type: string
-        - name: categoryId
+            format: date
+            pattern: "YYYY-MM-DD"
+        - name: dateMax
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+            pattern: "YYYY-MM-DD"
+        - name: priceMin
+          in: query
+          required: false
+          schema:
+            type: number
+        - name: priceMax
+          in: query
+          required: false
+          schema:
+            type: number
+        - name: categoryIds
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - $ref: "#/components/parameters/SizeParam"
+        - $ref: "#/components/parameters/PageParam"
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PagedExpenses"
+  /users/{userId}/incomes:
+    parameters:
+      - $ref: '#/components/parameters/UserIdPathParam'
+    get:
+      operationId: "getIncomesForUser"
+      parameters:
+        - $ref: "#/components/parameters/SizeParam"
+        - $ref: "#/components/parameters/PageParam"
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PagedIncomes"
+    post:
+      operationId: "createIncomeForUser"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddIncome'
+      responses:
+        '201':
+          description: Successfully created
+  /users/{userId}/incomes/{incomeId}:
+    parameters:
+      - $ref: '#/components/parameters/UserIdPathParam'
+      - in: path
+        name: incomeId
+        required: true
+        schema:
+          type: string
+    get:
+      operationId: "getIncomeForUser"
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Expense"
+    put:
+      operationId: "updateIncomeForUser"
+      parameters:
+        - $ref: '#/components/parameters/UserIdPathParam'
+        - name: incomeId
           in: path
           required: true
           schema:
             type: string
       responses:
+        '200':
+          description: Successful operation
+    delete:
+      operationId: "deleteIncomeForUser"
+      parameters:
+        - $ref: '#/components/parameters/UserIdPathParam'
+      responses:
         '204':
           description: Successfully deleted
+  /users/{userId}/incomes/criteria:
+    get:
+      operationId: "getIncomeForUserBySortingCriteria"
+      parameters:
+        - $ref: '#/components/parameters/UserIdPathParam'
+        - name: dateMin
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+            pattern: "YYYY-MM-DD"
+        - name: dateMax
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+            pattern: "YYYY-MM-DD"
+        - name: amountMin
+          in: query
+          required: false
+          schema:
+            type: number
+        - name: amountMax
+          in: query
+          required: false
+          schema:
+            type: number
+        - name: keyword
+          in: query
+          required: false
+          schema:
+            type: string
+        - $ref: "#/components/parameters/SizeParam"
+        - $ref: "#/components/parameters/PageParam"
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PagedIncomes"
 
 components:
+  parameters:
+    UserIdPathParam:
+      name: userId
+      in: path
+      required: true
+      schema:
+        type: string
+    SizeParam:
+      name: size
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 10
+    PageParam:
+      name: page
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 0
   schemas:
     User:
       type: object
       properties:
-        name:
+        id:
+          type: string
+        username:
           type: string
         email:
           type: string
-    Auth:
+        roles:
+          type: array
+          items:
+            type: string
+    Email:
+      type: string
+      description: pattern '^[\w!#$%&\'*+/=?`{|}~\-]+(?:\.[\w!#$%&\'*+/=?`{|}~\-]+)*@(?!-)(?:[a-zA-Z0-9\-]+\.)+[a-zA-Z]{2,6}$'
+    Password:
+      type: string
+      minLength: 8
+      maxLength: 24
+      description: at least one uppercase, at least one lowercase, at least one digit, at least one special character, no whitespace
+    RegisterDetails:
       type: object
       properties:
-        token:
+        username:
           type: string
-    Register:
-      type: object
-      properties:
-        name:
-          type: string
+          minLength: 3
+          maxLength: 30
         email:
-          type: string
+          $ref: "#/components/schemas/Email"
         password:
-          type: string
-    Login:
+          $ref: '#/components/schemas/Password'
+    LoginDetails:
       type: object
       properties:
         email:
-          type: string
+          $ref: "#/components/schemas/Email"
         password:
-          type: string
+          $ref: '#/components/schemas/Password'
     Category:
       type: object
       properties:
+        id:
+          type: string
         name:
           type: string
+    AddCategory:
+      type: object
+      properties:
+        name:
+          type: string
+    Expense:
+      type: object
+      properties:
+        id:
+          type: string
+        date:
+          type: string
+          format: date
+          pattern: "YYYY-MM-DD"
+        category:
+          $ref: '#/components/schemas/Category'
+        price:
+          type: number
+    AddExpense:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+          pattern: "YYYY-MM-DD"
+        category:
+          $ref: '#/components/schemas/Category'
+        price:
+          type: number
+    PagedExpenses:
+      type: object
+      properties:
+        totalPages:
+          type: integer
+        currentPage:
+          type: integer
+        expenses:
+          type: array
+          items:
+            $ref: "#/components/schemas/Expense"
+    Income:
+      type: object
+      properties:
+        id:
+          type: string
+        date:
+          type: string
+          format: date
+          pattern: "YYYY-MM-DD"
+        amount:
+          type: number
+        description:
+          type: string
+    AddIncome:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+          pattern: "YYYY-MM-DD"
+        amount:
+          type: number
+        description:
+          type: string
+    PagedIncomes:
+      type: object
+      properties:
+        totalPages:
+          type: integer
+        currentPage:
+          type: integer
+        incomes:
+          type: array
+          items:
+            $ref: "#/components/schemas/Income"
+

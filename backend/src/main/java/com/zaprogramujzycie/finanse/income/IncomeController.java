@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/users/{userId}/income")
+@RequestMapping("/users/{userId}/incomes")
 @RequiredArgsConstructor
 public class IncomeController {
 
