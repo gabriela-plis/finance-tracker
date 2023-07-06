@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -34,21 +35,31 @@ public class UserService {
         return userMapper.toDTO(userEntity);
     }
 
-    public User getUserById(String id) {
-        return userRepository.findById(id)
-            .orElseThrow(DocumentNotFoundException::new);
+    public List<UserDTO> findAll() {
+        List<User> users = userRepository.findAll();
+        return userMapper.toDTOs(users);
     }
 
-    public List<User> findAll() {
-        return userRepository.findAll();
-    }
-
-    public void delete(String id) {
-        userRepository.deleteById(id);
+    public UserDTO getUserById(String id) {
+        Optional<User> user = userRepository.findById(id);
+        return userMapper.toDTO(user);
     }
 
     public User save(User existingUser) {
         userRepository.save(existingUser);
         return existingUser;
+    }
+
+
+    public UserDTO updateUser(String id, UserDTO userDTO) {
+        Optional<User> existingUser = userRepository.findById(id);
+        userMapper.updateEntity(existingUser, userDTO);
+        Optional<User> updatedUser = userRepository.save(existingUser);
+        return userMapper.toDTO(updatedUser);
+    }
+
+    public void delete(String id) {
+        Optional<User> existingUser = userRepository.findById(id);
+        userRepository.delete(existingUser);
     }
 }

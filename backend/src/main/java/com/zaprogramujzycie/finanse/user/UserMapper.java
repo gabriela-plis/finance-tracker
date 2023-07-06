@@ -5,6 +5,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mapstruct.ReportingPolicy.ERROR;
 
@@ -20,9 +21,9 @@ public interface UserMapper {
     User toEntity(RegisterDetailsDTO user);
 
     @Mapping(target = "password", ignore = true)
-    void updateEntity(@MappingTarget User userToUpdate, UserDTO updatedUser);
+    void updateEntity(@MappingTarget Optional<User> userToUpdate, UserDTO updatedUser);
 
-    UserDTO toDTO(User user);
+    UserDTO toDTO(Optional<User> user);
 
     List<UserDTO> toDTOs(List<User> users);
 

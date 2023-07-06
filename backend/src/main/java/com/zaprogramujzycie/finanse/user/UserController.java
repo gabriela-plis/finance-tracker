@@ -18,42 +18,27 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-    private final UserMapper userMapper;
-
-    @ApiOperation(value = "Add a user")
-    @PostMapping("/{id})/add")
-    @ResponseStatus(code = HttpStatus.CREATED)
-    public UserDTO createUser(@RequestBody UserDTO userDTO) {
-        User newUser = userMapper.toEntity(userDTO);
-        User createdUser = userService.save(newUser);
-        return userMapper.toDTO(createdUser);
-    }
 
     @ApiOperation(value = "View a list of available users")
-    @GetMapping("/{id}/list")
+    @GetMapping("/")
     public List<UserDTO> getUsers() {
-        List<User> users = userService.findAll();
-        return userMapper.toDTOs(users);
+        return userService.findAll();
     }
 
     @ApiOperation(value = "Get a user by Id")
     @GetMapping("/{id}")
     public UserDTO getUser(@PathVariable String id) {
-        User user = userService.getUserById(id);
-        return userMapper.toDTO(user);
+        return userService.getUserById(id);
     }
 
     @ApiOperation(value = "Update a user")
-    @PutMapping("/{id}/update")
+    @PutMapping("/{id}")
     public UserDTO updateUser(@PathVariable String id, @RequestBody UserDTO userDTO) {
-        User existingUser = userService.getUserById(id);
-        userMapper.updateEntity(existingUser, userDTO);
-        User updatedUser = userService.save(existingUser);
-        return userMapper.toDTO(updatedUser);
+        return userService.updateUser(id, userDTO);
     }
 
     @ApiOperation(value = "Delete a user")
-    @DeleteMapping("/{id}/delete")
+    @DeleteMapping("/{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable String id) {
         userService.delete(id);
