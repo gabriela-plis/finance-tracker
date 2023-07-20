@@ -1,35 +1,73 @@
-<h1 align="center" id="title">Zaprogramuj Finanse</h1>
+# Finance Tracker
+* [General info](#general-info)
+* [Features](#features)
+* [Technologies](#technologies)
+* [Setup](#setup)
+* [Authors](#authors)
 
-<p align="center"><img src="https://socialify.git.ci/shoshinmas/Zaprogramuj_Finanse/image?language=1&amp;owner=1&amp;name=1&amp;stargazers=1&amp;theme=Light" alt="project-image"></p>
+## General info
+Finance Tracker is REST service oriented backend application for budget managment. Depending on the assigned role (ADMIN or USER), application provides distinct privileges and varying scopes of possibilities. Users can access the service through API endpoints to perform operations on their incomes and expenses.
 
-<p id="description">Simple personal finance app design with open APIs for categories.</p>
+## Features
+- **Registration & Login**: Users can register an account and log in. Additionally, they have the option to log in using GitHub. All authentication is based on JWT.
+- **Finance Management**: Users can effortlessly control their incomes and expenses through simple CRUD (Create, Read, Update, Delete) operations
 
-<p align="center"><img src="https://img.shields.io/badge/backend-Spring_Boot-blue" alt="shields"><img src="https://img.shields.io/badge/frontend-Bootstrap_with_JS-green" alt="shields"><img src="https://img.shields.io/badge/database-mongoDB-purple" alt="shields"></p>
+## Technologies
 
-<h2>Project Screenshots:</h2>
+### Backend
+  - Spring Boot
+  - Spring Web
+  - Spring Security
+  - Spring Data MongoDB
+  - Lombok
+  - Mapstruct
 
-<img src="https://cdn.discordapp.com/attachments/1113840423539060837/1120409998888009758/image.png" alt="project-screenshot" width="400" height="400/">
+### Backend Testing
 
-<img src="https://cdn.discordapp.com/attachments/1113840423539060837/1120397990436282368/image.png" alt="project-screenshot" width="400" height="400/">
+  - Spock
+  - Testcontainers
+  - Liquibase
 
-  
-  
-<h2>🧐 Features</h2>
+### Database
 
-Here're some of the project's best features:
+  - MongoDB
 
-*   API
-*   Cloud DB of categories and vendors of products and income
-*   RWD
+### Other
 
-  
-  
-<h2>💻 Built with</h2>
+  - Docker
+  - Swagger
 
-Technologies used in the project:
+## Setup
+To run Finance Tracker, follow steps:
+1. Clone project
 
-*   Java
-*   Spring Boot
-*   Swagger
-*   Lombok
-*   mongoDB
+  ``` bash      
+   git clone https://github.com/gabriela-plis/finance-tracker.git
+  ```
+
+2. Open cloned directory
+  ``` bash      
+   cd finance-tracker
+  ```
+
+3. Build project
+
+  ``` bash
+  ./gradlew clean build
+  ```
+
+4. Go to docker directory
+
+  ``` bash      
+   cd docker
+  ```
+
+5. Run using docker-compose 
+
+  ``` bash
+  docker-compose up -d
+  ```
+
+## Authors
+- [Gabriela Plis](https://github.com/gabriela-plis)
+- [Shoshinmas](https://github.com/shoshinmas)
