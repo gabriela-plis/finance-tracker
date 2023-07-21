@@ -28,7 +28,7 @@ class AuthenticationServiceTest extends Specification{
 
         then:
         1 * authenticationManager.authenticate(_ as UsernamePasswordAuthenticationToken) >> authentication
-        1 * jwtService.generateTokenCookie(_ as UserDetails) >> responseCookie
+        1 * jwtService.generateTokenCookie(_ as CustomUserDetails) >> responseCookie
 
         and:
         result == responseCookie

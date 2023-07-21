@@ -6,4 +6,7 @@ spring:
       database: database
 
 finance-tracker:
-    jwtSecret: 72357538782F4125442A472D4B6150645367566B597033733676397924422645
+  jwt:
+    secret-key: 72357538782F4125442A472D4B6150645367566B597033733676397924422645
+    expiration-ms: 86400000
+    cookie-name: "finance-tracker-jwt"

@@ -5,6 +5,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
@@ -13,18 +15,22 @@ import java.security.Key;
 import java.util.Date;
 
 @Service
+@AllArgsConstructor
+@NoArgsConstructor
 public class JwtService {
 
-    @Value("${finance-tracker.jwtSecret}")
+    @Value("${finance-tracker.jwt.secret-key}")
     private String jwtSecretKey;
-    private static final int jwtExpirationMs = 86400000; //24h
-    private static final String cookieName = "finance-tracker-jwt";
+    @Value("${finance-tracker.jwt.expiration-ms}")
+    private int jwtExpirationMs;
+    @Value("${finance-tracker.jwt.cookie-name}")
+    private String cookieName;
 
     public String getUsername (String token) {
         return getAllClaims(token).getSubject();
     }
 
-    public ResponseCookie generateTokenCookie(UserDetails userDetails) {
+    public ResponseCookie generateTokenCookie(CustomUserDetails userDetails) {
         String token = Jwts.builder()
             .setSubject(userDetails.getUsername())
             .setIssuedAt(new Date())
@@ -36,7 +42,7 @@ public class JwtService {
 
     }
 
-    public boolean isTokenValid(String token, UserDetails userDetails) {
+    public boolean isTokenValid(String token, CustomUserDetails userDetails) {
         final String username = getUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }

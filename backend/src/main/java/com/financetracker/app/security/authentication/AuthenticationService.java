@@ -22,12 +22,12 @@ public class AuthenticationService {
     public ResponseCookie loginUser(LoginDetailsDTO request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.email(), request.password()));
 
-        return jwtService.generateTokenCookie(new UserDetails(request.email(), request.password(), List.of(Role.USER)));
+        return jwtService.generateTokenCookie(new CustomUserDetails(request.email(), request.password(), List.of(Role.USER)));
 
     }
 
     public void registerUser(RegisterDetailsDTO request) {
-        if (!userService.userIsExist(request.email())) {
+        if (userService.userIsExist(request.email())) {
             throw new UserAlreadyExistException();
         }
 
