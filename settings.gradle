@@ -1,4 +1,3 @@
-rootProject.name = 'finanse'
+rootProject.name = 'finance-tracker'
 
 include 'backend'
-include 'frontend'

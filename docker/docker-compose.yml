@@ -12,8 +12,6 @@ services:
       - '27017:27017'
     volumes:
       - data:/data/db
-    networks:
-      - finance-tracker-network
   app:
     depends_on:
       - mongodb
@@ -21,12 +19,7 @@ services:
     container_name: app
     ports:
       - "8080:8080"
-    networks:
-      - finance-tracker-network
 
-networks:
-  finance-tracker-network:
-    driver: bridge
 
 volumes:
   data:
