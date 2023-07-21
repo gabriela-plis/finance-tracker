@@ -17,6 +17,10 @@ public class ResponseEntityExceptionHandler {
         return new ResponseEntity<>(NOT_FOUND);
     }
 
+    public ResponseEntity<?> handleUserAlreadyExistException() {
+        return new ResponseEntity<>(CONFLICT);
+    }
+
     @ExceptionHandler({
             MethodArgumentNotValidException.class,
             HttpMessageNotReadableException.class

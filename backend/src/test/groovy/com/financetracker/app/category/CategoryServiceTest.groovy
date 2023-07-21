@@ -10,10 +10,8 @@ import spock.lang.Specification
 
 class CategoryServiceTest extends Specification {
 
-    CategoryMapper categoryMapper = Mappers.getMapper(CategoryMapper)
-
     CategoryRepository categoryRepository = Mock()
-
+    CategoryMapper categoryMapper = Mappers.getMapper(CategoryMapper)
     UserService userService = Mock()
 
     CategoryService categoryService = new CategoryService(categoryRepository, categoryMapper, userService)
@@ -100,6 +98,6 @@ class CategoryServiceTest extends Specification {
     }
 
     private User getUserEntity() {
-        return new User("1", "Anne", "Smith", "anne123", List.of(Role.USER))
+        return new User("1", "Anne", "anne@gmail.com", "anne123", List.of(Role.USER))
     }
 }

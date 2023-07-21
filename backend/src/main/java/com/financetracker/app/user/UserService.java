@@ -4,11 +4,11 @@ import com.financetracker.app.utils.exception.DocumentNotFoundException;
 import com.financetracker.app.security.authentication.RegisterDetailsDTO;
 import com.financetracker.app.security.authorization.Role;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,7 +18,6 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public void registerUser(RegisterDetailsDTO user) {
-        //create user => UserAlreadyExistException
         User userEntity = userMapper.toEntity(user);
 
         userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
@@ -28,14 +27,13 @@ public class UserService {
 
     }
 
-    public User getUserByEmail(String email) {
+    public boolean userIsExist(String email) {
         return userRepository.findByEmail(email)
-            .orElseThrow(DocumentNotFoundException::new);
-
+            .isPresent();
     }
 
-    public List<User> findAll() {
-        return userRepository.findAll();
+    public Page<User> getAll(Pageable pageable) {
+        return userRepository.findAll(pageable);
 
     }
 
@@ -48,12 +46,14 @@ public class UserService {
         User existingUser = userRepository.findById(id)
             .orElseThrow(DocumentNotFoundException::new);
         userMapper.updateEntity(existingUser, userToUpdate);
+
         return userRepository.save(existingUser);
     }
 
     public void delete(String id) {
         User existingUser = userRepository.findById(id)
             .orElseThrow(DocumentNotFoundException::new);
+
         userRepository.delete(existingUser);
     }
 }

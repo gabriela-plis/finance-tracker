@@ -15,10 +15,8 @@ import java.time.LocalDate
 
 class IncomeServiceTest extends Specification{
 
-    IncomeMapper incomeMapper = Mappers.getMapper(IncomeMapper)
-
     IncomeRepository incomeRepository = Mock()
-
+    IncomeMapper incomeMapper = Mappers.getMapper(IncomeMapper)
     UserService userService = Mock()
 
     IncomeService incomeService = new IncomeService(incomeRepository, incomeMapper, userService)
@@ -142,6 +140,6 @@ class IncomeServiceTest extends Specification{
     }
 
     private User getUser() {
-        return new User("1", "Anne", "Smith", "anne123", List.of(Role.USER))
+        return new User("1", "Anne", "anne@gmail.com", "anne123", List.of(Role.USER))
     }
 }

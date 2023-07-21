@@ -24,11 +24,8 @@ class ExpenseServiceTest extends Specification {
     ExpenseMapper expenseMapper = Mappers.getMapper(ExpenseMapper).tap {
         expenseMapper -> expenseMapper.categoryMapper = this.categoryMapper
     }
-
     ExpenseRepository expenseRepository = Mock()
-
     UserService userService = Mock()
-
     StringListToObjectIdListConverter converter = Mock()
 
     ExpenseService expenseService = new ExpenseService(expenseRepository, expenseMapper, userService, converter)
@@ -152,6 +149,6 @@ class ExpenseServiceTest extends Specification {
     }
 
     private User getUser() {
-        return new User("1", "Anne", "Smith", "anne123", List.of(Role.USER))
+        return new User("1", "Anne", "anne@gmail.com", "anne123", List.of(Role.USER))
     }
 }

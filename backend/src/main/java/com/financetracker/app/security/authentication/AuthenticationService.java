@@ -2,6 +2,7 @@ package com.financetracker.app.security.authentication;
 
 import com.financetracker.app.user.UserService;
 import com.financetracker.app.security.authorization.Role;
+import com.financetracker.app.utils.exception.UserAlreadyExistException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,6 +27,9 @@ public class AuthenticationService {
     }
 
     public void registerUser(RegisterDetailsDTO request) {
+        if (!userService.userIsExist(request.email())) {
+            throw new UserAlreadyExistException();
+        }
 
         userService.registerUser(request);
     }

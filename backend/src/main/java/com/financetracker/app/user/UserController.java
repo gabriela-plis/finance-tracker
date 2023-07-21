@@ -2,6 +2,8 @@ package com.financetracker.app.user;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +21,8 @@ public class UserController {
 
     @ApiOperation(value = "View a list of available users")
     @GetMapping("/")
-    public List<UserDTO> getUsers() {
-        return userMapper.toDTOs(userService.findAll());
+    public PagedUsersDTO getUsers(Pageable pageable) {
+        return getPagedUsersDTO(userService.getAll(pageable));
     }
 
     @ApiOperation(value = "Get a user by Id")
@@ -40,5 +42,10 @@ public class UserController {
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable String id) {
         userService.delete(id);
+    }
+
+    private PagedUsersDTO getPagedUsersDTO(Page<User> pagedUsers) {
+        List<UserDTO> users = userMapper.toDTOs(pagedUsers.getContent());
+        return new PagedUsersDTO(pagedUsers.getTotalPages(), pagedUsers.getNumber(), users);
     }
 }
