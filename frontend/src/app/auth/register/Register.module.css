@@ -1,8 +1,0 @@
-.input {
-    transition: border-color 0.3s ease-in-out;
-  }
-  
-  .input:focus {
-    border-color: #6366f1;
-  }
-  
