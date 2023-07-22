@@ -1,4 +1,4 @@
-package com.financetracker.app.security.config;
+package com.financetracker.app.application;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

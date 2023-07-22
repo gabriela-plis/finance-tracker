@@ -2,6 +2,7 @@ package com.financetracker.app.security.authentication;
 
 import com.financetracker.app.security.authorization.Role;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,6 +12,7 @@ import java.util.Collection;
 import java.util.List;
 
 @AllArgsConstructor
+@EqualsAndHashCode
 public class CustomUserDetails implements UserDetails {
 
     private String email;
