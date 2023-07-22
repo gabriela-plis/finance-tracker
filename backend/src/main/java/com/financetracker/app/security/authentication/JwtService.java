@@ -5,26 +5,30 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
+import java.time.Clock;
+import java.time.Instant;
 import java.util.Date;
 
 @Service
-@AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class JwtService {
 
     @Value("${finance-tracker.jwt.secret-key}")
-    private String jwtSecretKey;
+    private final String jwtSecretKey;
+
     @Value("${finance-tracker.jwt.expiration-ms}")
-    private int jwtExpirationMs;
+    private final int jwtExpirationMs;
+
     @Value("${finance-tracker.jwt.cookie-name}")
-    private String cookieName;
+    private final String cookieName;
+
+    private final Clock clock;
 
     public String getUsername (String token) {
         return getAllClaims(token).getSubject();
@@ -32,14 +36,19 @@ public class JwtService {
 
     public ResponseCookie generateTokenCookie(CustomUserDetails userDetails) {
         String token = Jwts.builder()
+            .setHeaderParam("typ", "JWT")
             .setSubject(userDetails.getUsername())
-            .setIssuedAt(new Date())
-            .setExpiration(new Date(new Date().getTime() + jwtExpirationMs))
+            .setIssuedAt(Date.from(Instant.now(clock)))
+            .setExpiration(Date.from(Instant.ofEpochMilli(Date.from(Instant.now(clock)).getTime() + jwtExpirationMs)))
             .signWith(getSignInKey(), SignatureAlgorithm.HS256)
             .compact();
 
-        return ResponseCookie.from(cookieName, token).path("/auth").maxAge(getExpirationInSeconds()).httpOnly(true).build();
-
+        return ResponseCookie
+            .from(cookieName, token)
+            .path("/auth")
+            .maxAge(getExpirationInSeconds())
+            .httpOnly(true)
+            .build();
     }
 
     public boolean isTokenValid(String token, CustomUserDetails userDetails) {
@@ -48,7 +57,7 @@ public class JwtService {
     }
 
     private boolean isTokenExpired(String token) {
-        return getExpiration(token).before(new Date());
+        return getExpiration(token).before(Date.from(Instant.now(clock)));
     }
 
     private Date getExpiration(String token) {
