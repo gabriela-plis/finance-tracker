@@ -15,7 +15,7 @@ import java.util.List;
 @EqualsAndHashCode
 public class CustomUserDetails implements UserDetails {
 
-    private String email;
+    private String id;
 
     private String password;
 
@@ -39,7 +39,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
+        return id;
     }
 
     @Override
