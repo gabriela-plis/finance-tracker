@@ -1,24 +1,27 @@
 package com.financetracker.app.category;
+import com.financetracker.app.security.authentication.AuthenticationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 
 @Api(value = "Category Management")
 @RestController
-@RequestMapping("users/{userId}/categories")
+@RequestMapping("/users/me/categories")
 @RequiredArgsConstructor
 public class CategoryController {
 
     private final CategoryService categoryService;
     private final CategoryMapper categoryMapper;
+    private final AuthenticationService authenticationService;
 
     @GetMapping
-    public List<CategoryDTO> getUserCategories(@PathVariable String userId) {
+    public List<CategoryDTO> getUserCategories(Authentication authentication) {
+        String userId = authenticationService.getUserId(authentication);
         return categoryMapper.toDTOs(categoryService.getUserCategories(userId));
     }
 
@@ -30,7 +33,8 @@ public class CategoryController {
   @ApiOperation(value = "Add a category")
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
-    public void addCategory(@PathVariable String userId, @RequestBody AddCategoryDTO category) {
+    public void addCategory(@RequestBody AddCategoryDTO category, Authentication authentication) {
+        String userId = authenticationService.getUserId(authentication);
         categoryService.add(userId, category);
     }
 

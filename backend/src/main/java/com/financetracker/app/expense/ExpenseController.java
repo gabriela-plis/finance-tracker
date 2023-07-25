@@ -1,24 +1,29 @@
 package com.financetracker.app.expense;
 
+import com.financetracker.app.security.authentication.AuthenticationService;
+import com.financetracker.app.utils.exception.custom.IdNotMatchException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/users/{userId}/expenses")
+@RequestMapping("/users/me/expenses")
 @RequiredArgsConstructor
 public class ExpenseController {
 
     private final ExpenseService expenseService;
     private final ExpenseMapper expenseMapper;
+    private final AuthenticationService authenticationService;
 
     @GetMapping
-    public PagedExpensesDTO getUserExpenses(@PathVariable String userId, Pageable pageable) {
+    public PagedExpensesDTO getUserExpenses(Pageable pageable, Authentication authentication) {
+        String userId = authenticationService.getUserId(authentication);
         return getPagedExpensesDTO(expenseService.getUserExpenses(userId, pageable));
     }
 
@@ -28,18 +33,24 @@ public class ExpenseController {
     }
 
     @GetMapping("/criteria")
-    public PagedExpensesDTO getUserExpensesByCriteria(@PathVariable String userId, @Valid ExpenseSortingCriteriaDTO criteria, Pageable pageable) {
+    public PagedExpensesDTO getUserExpensesByCriteria(@Valid ExpenseSortingCriteriaDTO criteria, Pageable pageable, Authentication authentication) {
+        String userId = authenticationService.getUserId(authentication);
         return getPagedExpensesDTO(expenseService.getUserSortedExpenses(userId, criteria, pageable));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createExpense(@PathVariable String userId, @RequestBody @Valid AddExpenseDTO expense){
+    public void createExpense(@RequestBody @Valid AddExpenseDTO expense, Authentication authentication){
+        String userId = authenticationService.getUserId(authentication);
         expenseService.createExpense(userId, expense);
     }
 
     @PutMapping("/{expenseId}")
-    public void updateExpense(@PathVariable String userId, @RequestBody @Valid ExpenseDTO expense){
+    public void updateExpense(@PathVariable String expenseId, @RequestBody @Valid ExpenseDTO expense, Authentication authentication){
+        if (!expense.id().equals(expenseId)) {
+            throw new IdNotMatchException();
+        }
+        String userId = authenticationService.getUserId(authentication);
         expenseService.updateExpense(userId, expense);
     }
 

@@ -1,24 +1,30 @@
 package com.financetracker.app.income;
 
+import com.financetracker.app.security.authentication.AuthenticationService;
+import com.financetracker.app.utils.exception.custom.IdNotMatchException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 @RestController
-@RequestMapping("/users/{userId}/incomes")
+@RequestMapping("/users/me/incomes")
 @RequiredArgsConstructor
 public class IncomeController {
 
     private final IncomeService incomeService;
     private final IncomeMapper incomeMapper;
+    private final AuthenticationService authenticationService;
 
     @GetMapping
-    public PagedIncomesDTO getUserIncome(@PathVariable String userId, Pageable pageable) {
+    public PagedIncomesDTO getUserIncome(Pageable pageable, Authentication authentication) {
+        String userId = authenticationService.getUserId(authentication);
         return getPagedIncomesDTO(incomeService.getUserIncomes(userId, pageable));
     }
 
@@ -28,18 +34,25 @@ public class IncomeController {
     }
 
     @GetMapping("/criteria")
-    public PagedIncomesDTO getUserIncomeByCriteria(@PathVariable String userId, @Valid IncomeSortingCriteriaDTO criteria, Pageable pageable) {
+    public PagedIncomesDTO getUserIncomeByCriteria(@Valid IncomeSortingCriteriaDTO criteria, Pageable pageable, Authentication authentication) {
+        String userId = authenticationService.getUserId(authentication);
         return getPagedIncomesDTO(incomeService.getUserSortedIncomes(userId, criteria, pageable));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createIncome(@PathVariable String userId, @RequestBody @Valid AddIncomeDTO income){
+    public void createIncome(@RequestBody @Valid AddIncomeDTO income, Authentication authentication){
+        String userId = authenticationService.getUserId(authentication);
         incomeService.createIncome(userId, income);
     }
 
     @PutMapping("/{incomeId}")
-    public void updateIncome(@PathVariable String userId, @RequestBody @Valid IncomeDTO income){
+    public void updateIncome(@PathVariable String incomeId, @RequestBody @Valid IncomeDTO income, Authentication authentication){
+        if (!income.id().equals(incomeId)) {
+            throw new IdNotMatchException();
+        }
+
+        String userId = authenticationService.getUserId(authentication);
         incomeService.updateIncome(userId, income);
     }
 

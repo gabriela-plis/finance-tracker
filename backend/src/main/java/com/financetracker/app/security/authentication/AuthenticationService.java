@@ -1,12 +1,14 @@
 package com.financetracker.app.security.authentication;
 
+import com.financetracker.app.user.User;
 import com.financetracker.app.user.UserService;
 import com.financetracker.app.security.authorization.Role;
-import com.financetracker.app.utils.exception.UserAlreadyExistException;
+import com.financetracker.app.utils.exception.custom.UserAlreadyExistException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,12 +19,16 @@ public class AuthenticationService {
 
     private final JwtService jwtService;
     private final UserService userService;
-    private final AuthenticationManager authenticationManager;
+    private final PasswordEncoder passwordEncoder;
 
     public ResponseCookie loginUser(LoginDetailsDTO request) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.email(), request.password()));
+        User user = userService.getUserByEmail(request.email());
 
-        return jwtService.generateTokenCookie(new CustomUserDetails(request.email(), request.password(), List.of(Role.USER)));
+        if (!passwordEncoder.matches(request.password(), user.getPassword())) {
+            throw new BadCredentialsException("Wrong email or password");
+        }
+
+        return jwtService.generateTokenCookie(new CustomUserDetails(user.getId(), request.password(), List.of(Role.USER)));
 
     }
 
@@ -32,6 +38,11 @@ public class AuthenticationService {
         }
 
         userService.registerUser(request);
+    }
+
+    public String getUserId(Authentication authentication) {
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        return userDetails.getUsername();
     }
 
 }
