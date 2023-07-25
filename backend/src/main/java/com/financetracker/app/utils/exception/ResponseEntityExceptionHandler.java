@@ -1,36 +1,39 @@
 package com.financetracker.app.utils.exception;
 
-import org.springframework.http.ResponseEntity;
+import com.financetracker.app.utils.exception.custom.DocumentNotFoundException;
+import com.financetracker.app.utils.exception.custom.IdNotMatchException;
+import com.financetracker.app.utils.exception.custom.UserAlreadyExistException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import static org.springframework.http.HttpStatus.*;
 
 @ControllerAdvice
 public class ResponseEntityExceptionHandler {
 
+    @ResponseStatus(NOT_FOUND)
     @ExceptionHandler(DocumentNotFoundException.class)
-    public ResponseEntity<?> handleDocumentNotFoundException() {
-        return new ResponseEntity<>(NOT_FOUND);
-    }
+    public void handleDocumentNotFoundException() {}
 
-    public ResponseEntity<?> handleUserAlreadyExistException() {
-        return new ResponseEntity<>(CONFLICT);
-    }
+    @ResponseStatus(CONFLICT)
+    @ExceptionHandler({
+        UserAlreadyExistException.class,
+        IdNotMatchException.class
+    })
+    public void handleConflictExceptions() {}
 
+    @ResponseStatus(UNPROCESSABLE_ENTITY)
     @ExceptionHandler({
             MethodArgumentNotValidException.class,
             HttpMessageNotReadableException.class
     })
-    public ResponseEntity<?> handleExceptionsForFailedDTOValidation() {
-        return new ResponseEntity<>(UNPROCESSABLE_ENTITY);
-    }
+    public void handleFailedDTOValidationExceptions() {}
 
+    @ResponseStatus(UNAUTHORIZED)
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<?> handleBadCredentialsException() {
-        return new ResponseEntity<>(UNAUTHORIZED);
-    }
+    public void handleBadCredentialsException() {}
 }

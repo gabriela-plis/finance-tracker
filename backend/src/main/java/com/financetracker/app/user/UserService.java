@@ -1,6 +1,6 @@
 package com.financetracker.app.user;
 
-import com.financetracker.app.utils.exception.DocumentNotFoundException;
+import com.financetracker.app.utils.exception.custom.DocumentNotFoundException;
 import com.financetracker.app.security.authentication.RegisterDetailsDTO;
 import com.financetracker.app.security.authorization.Role;
 import lombok.RequiredArgsConstructor;
@@ -55,5 +55,10 @@ public class UserService {
             .orElseThrow(DocumentNotFoundException::new);
 
         userRepository.delete(existingUser);
+    }
+
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+            .orElseThrow(DocumentNotFoundException::new);
     }
 }
