@@ -4,7 +4,7 @@ package com.financetracker.app.income
 import com.financetracker.app.security.authorization.Role
 import com.financetracker.app.user.User
 import com.financetracker.app.user.UserService
-import com.financetracker.app.utils.exception.DocumentNotFoundException
+import com.financetracker.app.utils.exception.custom.DocumentNotFoundException
 import org.mapstruct.factory.Mappers
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
@@ -23,14 +23,14 @@ class IncomeServiceTest extends Specification{
 
     def"should get all user incomes"() {
         given:
-        String userId = 1
+        String userId = "1"
         PageRequest pageable = PageRequest.of(0, 5)
 
         when:
         Page<Income> result = incomeService.getUserIncomes(userId, pageable)
 
         then:
-        1 * incomeRepository.findByUser_Id(userId, pageable) >> getPagedIncomes()
+        1 * incomeRepository.findIncomesByUserId(userId, pageable) >> getPagedIncomes()
 
         and:
         result == getPagedIncomes()
@@ -38,13 +38,14 @@ class IncomeServiceTest extends Specification{
 
     def"should get income by id"() {
         given:
-        String incomeId = 1
+        String incomeId = "1"
+        String userId = "1"
 
         when:
-        Income result = incomeService.getIncome(incomeId)
+        Income result = incomeService.getIncome(incomeId, userId)
 
         then:
-        1 * incomeRepository.findById(incomeId) >> Optional.of(getIncome())
+        1 * incomeRepository.findIncomeByIdAndUserId(incomeId, userId) >> Optional.of(getIncome())
 
         and:
         result == getIncome()
@@ -52,13 +53,14 @@ class IncomeServiceTest extends Specification{
 
     def"should throw DocumentNotFoundException when income was not found by id"() {
         given:
-        String incomeId = 1
+        String incomeId = "1"
+        String userId = "1"
 
         when:
-        incomeService.getIncome(incomeId)
+        incomeService.getIncome(incomeId, userId)
 
         then:
-        1 * incomeRepository.findById(incomeId) >> Optional.empty()
+        1 * incomeRepository.findIncomeByIdAndUserId(incomeId, userId) >> Optional.empty()
 
         and:
         thrown(DocumentNotFoundException)
@@ -66,7 +68,7 @@ class IncomeServiceTest extends Specification{
 
     def"should get user sorted incomes"() {
         given:
-        String userId = 1
+        String userId = "1"
         PageRequest pageable = PageRequest.of(0 ,5)
         IncomeSortingCriteriaDTO sortingCriteria = new IncomeSortingCriteriaDTO(LocalDate.of(2020, 1, 1), LocalDate.of(2022, 1, 1), BigDecimal.valueOf(50), BigDecimal.valueOf(300), null)
 
@@ -74,7 +76,7 @@ class IncomeServiceTest extends Specification{
         Page<Income> result = incomeService.getUserSortedIncomes(userId, sortingCriteria, pageable)
 
         then:
-        1 * incomeRepository.findByUser_IdAndDateBetweenAndAmountBetweenAndDescriptionContainingIgnoreCase(userId, sortingCriteria.dateMin(), sortingCriteria.dateMax(), sortingCriteria.amountMin(), sortingCriteria.amountMax(), sortingCriteria.keyword(), pageable) >> getPagedIncomes()
+        1 * incomeRepository.findIncomesByUserIdAndDateBetweenAndAmountBetweenAndDescriptionContainingIgnoreCase(userId, sortingCriteria.dateMin(), sortingCriteria.dateMax(), sortingCriteria.amountMin(), sortingCriteria.amountMax(), sortingCriteria.keyword(), pageable) >> getPagedIncomes()
 
         and:
         result == getPagedIncomes()
@@ -82,7 +84,7 @@ class IncomeServiceTest extends Specification{
 
     def"should create income"() {
         given:
-        String userId = 1
+        String userId = "1"
         AddIncomeDTO incomeToAdd = new AddIncomeDTO(LocalDate.of(2020, 1, 1), BigDecimal.valueOf(100.50), "income")
 
         when:
@@ -95,7 +97,7 @@ class IncomeServiceTest extends Specification{
 
     def"should update income"() {
         given:
-        String userId = 1
+        String userId = "1"
         IncomeDTO incomeToUpdate = getIncomeDTO()
 
         when:
@@ -108,13 +110,14 @@ class IncomeServiceTest extends Specification{
 
     def"should delete income"() {
         given:
-        String incomeId = 1
+        String incomeId = "1"
+        String userId = "1"
 
         when:
-        incomeService.deleteIncome(incomeId)
+        incomeService.deleteIncome(incomeId, userId)
 
         then:
-        1 * incomeRepository.deleteById(incomeId)
+        1 * incomeRepository.deleteIncomeByIdAndUserId(incomeId, userId)
     }
 
     private Page<Income> getPagedIncomes() {

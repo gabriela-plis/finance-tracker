@@ -14,14 +14,14 @@ class CustomUserDetailsServiceTest extends Specification {
 
     def"should load user by username"() {
         given:
-        String username = "anne@gmail.com"
-        CustomUserDetails expected = new CustomUserDetails("anne@gmail.com", "anne123", List.of(Role.USER))
+        String id = "1"
+        CustomUserDetails expected = new CustomUserDetails("1", "anne123", List.of(Role.USER))
 
         when:
-        CustomUserDetails result = customUserDetailsService.loadUserByUsername(username)
+        CustomUserDetails result = customUserDetailsService.loadUserByUsername(id)
 
         then:
-        1 * userRepository.findByEmail(username) >> Optional.of(getUser())
+        1 * userRepository.findById(id) >> Optional.of(getUser())
 
         and:
         result == expected
@@ -29,18 +29,17 @@ class CustomUserDetailsServiceTest extends Specification {
 
     def"should not load user by username and throw UsernameNotFoundException"() {
         given:
-        String username = "anne@gmail.com"
+        String id = "1"
 
         when:
-        customUserDetailsService.loadUserByUsername(username)
+        customUserDetailsService.loadUserByUsername(id)
 
         then:
-        1 * userRepository.findByEmail(username ) >> Optional.empty()
+        1 * userRepository.findById(id) >> Optional.empty()
 
         and:
         thrown(UsernameNotFoundException)
     }
-
 
     private User getUser() {
         return new User("1", "Anne", "anne@gmail.com", "anne123", List.of(Role.USER))

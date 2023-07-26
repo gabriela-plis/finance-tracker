@@ -28,8 +28,9 @@ public class ExpenseController {
     }
 
     @GetMapping("/{expenseId}")
-    public ExpenseDTO getExpense(@PathVariable String expenseId) {
-        return expenseMapper.toDTO(expenseService.getExpense(expenseId));
+    public ExpenseDTO getExpense(@PathVariable String expenseId, Authentication authentication) {
+        String userId = authenticationService.getUserId(authentication);
+        return expenseMapper.toDTO(expenseService.getExpense(expenseId, userId));
     }
 
     @GetMapping("/criteria")
@@ -40,13 +41,13 @@ public class ExpenseController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createExpense(@RequestBody @Valid AddExpenseDTO expense, Authentication authentication){
+    public void createExpense(@RequestBody @Valid AddExpenseDTO expense, Authentication authentication) {
         String userId = authenticationService.getUserId(authentication);
         expenseService.createExpense(userId, expense);
     }
 
     @PutMapping("/{expenseId}")
-    public void updateExpense(@PathVariable String expenseId, @RequestBody @Valid ExpenseDTO expense, Authentication authentication){
+    public void updateExpense(@PathVariable String expenseId, @RequestBody @Valid ExpenseDTO expense, Authentication authentication) {
         if (!expense.id().equals(expenseId)) {
             throw new IdNotMatchException();
         }
@@ -56,8 +57,9 @@ public class ExpenseController {
 
     @DeleteMapping("/{expenseId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteExpense(@PathVariable String expenseId){
-        expenseService.deleteExpense(expenseId);
+    public void deleteExpense(@PathVariable String expenseId, Authentication authentication) {
+        String userId = authenticationService.getUserId(authentication);
+        expenseService.deleteExpense(expenseId, userId);
     }
 
     private PagedExpensesDTO getPagedExpensesDTO(Page<Expense> pagedExpenses) {

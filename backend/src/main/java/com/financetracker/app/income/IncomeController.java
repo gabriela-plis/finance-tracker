@@ -23,18 +23,19 @@ public class IncomeController {
     private final AuthenticationService authenticationService;
 
     @GetMapping
-    public PagedIncomesDTO getUserIncome(Pageable pageable, Authentication authentication) {
+    public PagedIncomesDTO getUserIncomes(Pageable pageable, Authentication authentication) {
         String userId = authenticationService.getUserId(authentication);
         return getPagedIncomesDTO(incomeService.getUserIncomes(userId, pageable));
     }
 
     @GetMapping("/{incomeId}")
-    public IncomeDTO getIncome(@PathVariable String incomeId) {
-        return incomeMapper.toDTO(incomeService.getIncome(incomeId));
+    public IncomeDTO getIncome(@PathVariable String incomeId, Authentication authentication) {
+        String userId = authenticationService.getUserId(authentication);
+        return incomeMapper.toDTO(incomeService.getIncome(incomeId, userId));
     }
 
     @GetMapping("/criteria")
-    public PagedIncomesDTO getUserIncomeByCriteria(@Valid IncomeSortingCriteriaDTO criteria, Pageable pageable, Authentication authentication) {
+    public PagedIncomesDTO getUserIncomesByCriteria(@Valid IncomeSortingCriteriaDTO criteria, Pageable pageable, Authentication authentication) {
         String userId = authenticationService.getUserId(authentication);
         return getPagedIncomesDTO(incomeService.getUserSortedIncomes(userId, criteria, pageable));
     }
@@ -58,8 +59,9 @@ public class IncomeController {
 
     @DeleteMapping("/{incomeId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteIncome(@PathVariable String incomeId){
-        incomeService.deleteIncome(incomeId);
+    public void deleteIncome(@PathVariable String incomeId, Authentication authentication){
+        String userId = authenticationService.getUserId(authentication);
+        incomeService.deleteIncome(incomeId, userId);
     }
 
     private PagedIncomesDTO getPagedIncomesDTO(Page<Income> pagedIncomes) {

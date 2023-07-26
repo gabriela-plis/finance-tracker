@@ -13,20 +13,19 @@ public class IncomeService {
 
     private final IncomeRepository incomeRepository;
     private final IncomeMapper incomeMapper;
-
     private final UserService userService;
 
     public Page<Income> getUserIncomes(String userId, Pageable pageable) {
-        return incomeRepository.findByUser_Id(userId, pageable);
+        return incomeRepository.findIncomesByUserId(userId, pageable);
     }
 
-    public Income getIncome(String incomeId) {
-        return incomeRepository.findById(incomeId)
+    public Income getIncome(String incomeId, String userId) {
+        return incomeRepository.findIncomeByIdAndUserId(incomeId, userId)
             .orElseThrow(DocumentNotFoundException::new);
     }
 
     public Page<Income> getUserSortedIncomes(String userId, IncomeSortingCriteriaDTO criteria, Pageable pageable) {
-        return incomeRepository.findByUser_IdAndDateBetweenAndAmountBetweenAndDescriptionContainingIgnoreCase(userId, criteria.dateMin(), criteria.dateMax(), criteria.amountMin(), criteria.amountMax(), criteria.keyword(), pageable);
+        return incomeRepository.findIncomesByUserIdAndDateBetweenAndAmountBetweenAndDescriptionContainingIgnoreCase(userId, criteria.dateMin(), criteria.dateMax(), criteria.amountMin(), criteria.amountMax(), criteria.keyword(), pageable);
     }
 
     public void createIncome(String userId, AddIncomeDTO incomeToAdd) {
@@ -43,8 +42,8 @@ public class IncomeService {
         incomeRepository.save(income);
     }
 
-    public void deleteIncome(String incomeId) {
-        incomeRepository.deleteById(incomeId);
+    public void deleteIncome(String incomeId, String userId) {
+        incomeRepository.deleteIncomeByIdAndUserId(incomeId, userId);
     }
 
 }

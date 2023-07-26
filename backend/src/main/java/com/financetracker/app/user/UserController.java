@@ -20,7 +20,7 @@ public class UserController {
     private final UserMapper userMapper;
 
     @ApiOperation(value = "View a list of available users")
-    @GetMapping("/")
+    @GetMapping
     public PagedUsersDTO getUsers(Pageable pageable) {
         return getPagedUsersDTO(userService.getAll(pageable));
     }

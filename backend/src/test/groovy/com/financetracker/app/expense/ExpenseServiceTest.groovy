@@ -8,7 +8,7 @@ import com.financetracker.app.security.authorization.Role
 import com.financetracker.app.user.User
 import com.financetracker.app.user.UserService
 import com.financetracker.app.utils.converter.StringListToObjectIdListConverter
-import com.financetracker.app.utils.exception.DocumentNotFoundException
+import com.financetracker.app.utils.exception.custom.DocumentNotFoundException
 import org.mapstruct.factory.Mappers
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
@@ -32,14 +32,14 @@ class ExpenseServiceTest extends Specification {
 
     def"should get all user expenses"() {
         given:
-        String userId = 1
+        String userId = "1"
         PageRequest pageable = PageRequest.of(0, 5)
 
         when:
         Page<Expense> result = expenseService.getUserExpenses(userId, pageable)
 
         then:
-        1 * expenseRepository.findByUser_Id(userId, pageable) >> getPagedExpenses()
+        1 * expenseRepository.findExpensesByUserId(userId, pageable) >> getPagedExpenses()
 
         and:
         result == getPagedExpenses()
@@ -47,13 +47,14 @@ class ExpenseServiceTest extends Specification {
 
     def"should get expense by id"() {
         given:
-        String expenseId = 1
+        String expenseId = "1"
+        String userId = "1"
 
         when:
-        Expense result = expenseService.getExpense(expenseId)
+        Expense result = expenseService.getExpense(expenseId, userId)
 
         then:
-        1 * expenseRepository.findById(expenseId) >> Optional.of(getExpense())
+        1 * expenseRepository.findExpenseByIdAndUserId(expenseId, userId) >> Optional.of(getExpense())
 
         and:
         result == getExpense()
@@ -61,21 +62,22 @@ class ExpenseServiceTest extends Specification {
 
     def"should throw DocumentNotFoundException when expense was not found by id"() {
         given:
-        String expenseId = 1
+        String expenseId = "1"
+        String userId = "1"
 
         when:
-        expenseService.getExpense(expenseId)
+        expenseService.getExpense(expenseId, userId)
 
         then:
-        1 * expenseRepository.findById(expenseId) >> Optional.empty()
+        1 * expenseRepository.findExpenseByIdAndUserId(expenseId, userId) >> Optional.empty()
 
         and:
         thrown(DocumentNotFoundException)
     }
 
-    def"should get user sorted expenses"() {
+    def"should get user sorted expenses - with category ids criterium"() {
         given:
-        String userId = 1
+        String userId = "1"
         PageRequest pageable = PageRequest.of(0, 5)
         ExpenseSortingCriteriaDTO sortingCriteria = new ExpenseSortingCriteriaDTO(LocalDate.of(2020, 1, 1), LocalDate.of(2022, 1, 1), BigDecimal.valueOf(50), BigDecimal.valueOf(300), List.of("1", "2"))
 
@@ -83,7 +85,23 @@ class ExpenseServiceTest extends Specification {
         Page<Expense> result = expenseService.getUserSortedExpenses(userId, sortingCriteria, pageable)
 
         then:
-        1 * expenseRepository.findByUserIdAndDateBetweenAndPriceBetweenAndCategoryIdIn(userId, sortingCriteria.dateMin(), sortingCriteria.dateMax(), sortingCriteria.priceMin(), sortingCriteria.priceMax(), converter.convert(sortingCriteria.categoryIds()), pageable) >> getPagedExpenses()
+        1 * expenseRepository.findExpensesByUserIdAndDateBetweenAndPriceBetweenAndCategoryIdIn(userId, sortingCriteria.dateMin(), sortingCriteria.dateMax(), sortingCriteria.priceMin(), sortingCriteria.priceMax(), converter.convert(sortingCriteria.categoryIds()), pageable) >> getPagedExpenses()
+
+        and:
+        result == getPagedExpenses()
+    }
+
+    def"should get user sorted expenses - without category ids criterium"() {
+        given:
+        String userId = "1"
+        PageRequest pageable = PageRequest.of(0, 5)
+        ExpenseSortingCriteriaDTO sortingCriteria = new ExpenseSortingCriteriaDTO(LocalDate.of(2020, 1, 1), LocalDate.of(2022, 1, 1), BigDecimal.valueOf(50), BigDecimal.valueOf(300), null)
+
+        when:
+        Page<Expense> result = expenseService.getUserSortedExpenses(userId, sortingCriteria, pageable)
+
+        then:
+        1 * expenseRepository.findExpensesByUserIdAndDateBetweenAndPriceBetween(userId, sortingCriteria.dateMin(), sortingCriteria.dateMax(), sortingCriteria.priceMin(), sortingCriteria.priceMax(), pageable) >> getPagedExpenses()
 
         and:
         result == getPagedExpenses()
@@ -91,7 +109,7 @@ class ExpenseServiceTest extends Specification {
 
     def"should create expense"() {
         given:
-        String userId = 1
+        String userId = "1"
         AddExpenseDTO expenseToAdd = new AddExpenseDTO(LocalDate.of(2020, 1, 3), new CategoryDTO("1", "Food"), BigDecimal.valueOf(27.50))
 
         when:
@@ -104,7 +122,7 @@ class ExpenseServiceTest extends Specification {
 
     def"should update expense"() {
         given:
-        String userId = 1
+        String userId = "1"
         ExpenseDTO expenseToUpdate = getExpenseDTO()
 
         when:
@@ -117,15 +135,15 @@ class ExpenseServiceTest extends Specification {
 
     def"should delete expense"() {
         given:
-        String expenseId = 1
+        String expenseId = "1"
+        String userId = "1"
 
         when:
-        expenseService.deleteExpense(expenseId)
+        expenseService.deleteExpense(expenseId, userId)
 
         then:
-        1 * expenseRepository.deleteById(expenseId)
+        1 * expenseRepository.deleteExpenseByIdAndUserId(expenseId, userId)
     }
-
 
     private Page<Expense> getPagedExpenses() {
         List<Expense> expenses = List.of(

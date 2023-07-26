@@ -20,5 +20,5 @@ public class Category {
     private String name;
 
     @DBRef
-    private User owner;
+    private User user;
 }

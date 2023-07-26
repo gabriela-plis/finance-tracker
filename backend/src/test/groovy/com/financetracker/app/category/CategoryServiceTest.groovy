@@ -4,7 +4,7 @@ package com.financetracker.app.category
 import com.financetracker.app.security.authorization.Role
 import com.financetracker.app.user.User
 import com.financetracker.app.user.UserService
-import com.financetracker.app.utils.exception.DocumentNotFoundException
+import com.financetracker.app.utils.exception.custom.DocumentNotFoundException
 import org.mapstruct.factory.Mappers
 import spock.lang.Specification
 
@@ -18,13 +18,13 @@ class CategoryServiceTest extends Specification {
 
     def "should get all user categories"() {
         given:
-        String userId = 1
+        String userId = "1"
 
         when:
         List<Category> result = categoryService.getUserCategories(userId)
 
         then:
-        1 * categoryRepository.findByOwner_Id(userId) >> getCategoryEntities()
+        1 * categoryRepository.findCategoriesByUserId(userId) >> getCategoryEntities()
 
         and:
         result == getCategoryEntities()
@@ -34,12 +34,13 @@ class CategoryServiceTest extends Specification {
     def"should get category by id"() {
         given:
         String categoryId = "1"
+        String userId = "1"
 
         when:
-        Category result = categoryService.getCategory(categoryId)
+        Category result = categoryService.getCategory(categoryId, userId)
 
         then:
-        1 * categoryRepository.findById(categoryId) >> Optional.of(getCategory())
+        1 * categoryRepository.findCategoryByIdAndUserId(categoryId, userId) >> Optional.of(getCategory())
 
         and:
         result == getCategory()
@@ -48,12 +49,13 @@ class CategoryServiceTest extends Specification {
     def"should throw DocumentNotFoundException when category was not found by id"() {
         given:
         String categoryId = "1"
+        String userId = "1"
 
         when:
-        categoryService.getCategory(categoryId)
+        categoryService.getCategory(categoryId, userId)
 
         then:
-        1 * categoryRepository.findById(categoryId) >> Optional.empty()
+        1 * categoryRepository.findCategoryByIdAndUserId(categoryId, userId) >> Optional.empty()
 
         and:
         thrown(DocumentNotFoundException)
@@ -61,13 +63,14 @@ class CategoryServiceTest extends Specification {
 
     def "should delete category"() {
         given:
-        String id = 1
+        String categoryId = "1"
+        String userId = "1"
 
         when:
-        categoryService.delete(id)
+        categoryService.delete(categoryId, userId)
 
         then:
-        1 * categoryRepository.deleteById(id)
+        1 * categoryRepository.deleteCategoryByIdAndUserId(categoryId, userId)
     }
 
     def"should add category"() {

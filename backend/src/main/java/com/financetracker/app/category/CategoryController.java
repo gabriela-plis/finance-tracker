@@ -26,8 +26,9 @@ public class CategoryController {
     }
 
     @GetMapping("/{categoryId}")
-    public CategoryDTO getCategory(@PathVariable String categoryId) {
-        return categoryMapper.toDTO(categoryService.getCategory(categoryId));
+    public CategoryDTO getCategory(@PathVariable String categoryId, Authentication authentication) {
+        String userId = authenticationService.getUserId(authentication);
+        return categoryMapper.toDTO(categoryService.getCategory(categoryId, userId));
     }
 
   @ApiOperation(value = "Add a category")
@@ -40,7 +41,8 @@ public class CategoryController {
 
     @DeleteMapping("/{categoryId}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public void deleteCategory(@PathVariable String categoryId) {
-        categoryService.delete(categoryId);
+    public void deleteCategory(@PathVariable String categoryId, Authentication authentication) {
+        String userId = authenticationService.getUserId(authentication);
+        categoryService.delete(categoryId, userId);
     }
 }

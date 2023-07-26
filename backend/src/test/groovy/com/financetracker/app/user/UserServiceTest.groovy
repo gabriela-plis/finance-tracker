@@ -2,7 +2,7 @@ package com.financetracker.app.user
 
 import com.financetracker.app.security.authentication.RegisterDetailsDTO
 import com.financetracker.app.security.authorization.Role
-import com.financetracker.app.utils.exception.DocumentNotFoundException
+import com.financetracker.app.utils.exception.custom.DocumentNotFoundException
 import org.mapstruct.factory.Mappers
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
