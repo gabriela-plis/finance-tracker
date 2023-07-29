@@ -2,6 +2,7 @@ package com.financetracker.app.category;
 import com.financetracker.app.security.authentication.AuthenticationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -31,18 +32,18 @@ public class CategoryController {
         return categoryMapper.toDTO(categoryService.getCategory(categoryId, userId));
     }
 
-  @ApiOperation(value = "Add a category")
+    @ApiOperation(value = "Add a category")
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
-    public void addCategory(@RequestBody AddCategoryDTO category, Authentication authentication) {
+    public void createCategory(@RequestBody @Valid AddCategoryDTO category, Authentication authentication) {
         String userId = authenticationService.getUserId(authentication);
-        categoryService.add(userId, category);
+        categoryService.createCategory(userId, category);
     }
 
     @DeleteMapping("/{categoryId}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     public void deleteCategory(@PathVariable String categoryId, Authentication authentication) {
         String userId = authenticationService.getUserId(authentication);
-        categoryService.delete(categoryId, userId);
+        categoryService.deleteCategory(categoryId, userId);
     }
 }

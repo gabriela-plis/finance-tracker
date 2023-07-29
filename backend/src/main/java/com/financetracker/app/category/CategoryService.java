@@ -19,11 +19,11 @@ public class CategoryService {
         return categoryRepository.findCategoriesByUserId(userId);
     }
 
-    public void delete(String categoryId, String userId) {
+    public void deleteCategory(String categoryId, String userId) {
         categoryRepository.deleteCategoryByIdAndUserId(categoryId, userId);
     }
 
-    public void add(String userId, AddCategoryDTO categoryToAdd) {
+    public void createCategory(String userId, AddCategoryDTO categoryToAdd) {
         Category category = categoryMapper.toEntity(categoryToAdd);
         category.setUser(userService.getUserById(userId));
 

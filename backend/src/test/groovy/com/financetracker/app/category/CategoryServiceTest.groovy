@@ -67,7 +67,7 @@ class CategoryServiceTest extends Specification {
         String userId = "1"
 
         when:
-        categoryService.delete(categoryId, userId)
+        categoryService.deleteCategory(categoryId, userId)
 
         then:
         1 * categoryRepository.deleteCategoryByIdAndUserId(categoryId, userId)
@@ -81,7 +81,7 @@ class CategoryServiceTest extends Specification {
         userService.getUserById(userId) >> getUserEntity()
 
         when:
-        categoryService.add(userId, category)
+        categoryService.createCategory(userId, category)
 
         then:
         1 * userService.getUserById(userId)
