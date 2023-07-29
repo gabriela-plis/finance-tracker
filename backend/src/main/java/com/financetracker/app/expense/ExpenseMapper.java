@@ -3,6 +3,7 @@ package com.financetracker.app.expense;
 import com.financetracker.app.category.CategoryMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -19,6 +20,11 @@ public interface ExpenseMapper {
     Expense toEntity(AddExpenseDTO expense);
 
     ExpenseDTO toDTO(Expense expense);
+
+    @Mapping(target = "totalPages", expression = "java(expenses.getTotalPages())")
+    @Mapping(target = "currentPage", expression = "java(expenses.getNumber())")
+    @Mapping(target = "expenses", expression = "java(toDTOs(expenses.getContent()))")
+    PagedExpensesDTO toPagedDTO(Page<Expense> expenses);
 
     List<ExpenseDTO> toDTOs(List<Expense> expenses);
 

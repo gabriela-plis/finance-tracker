@@ -1,14 +1,12 @@
 package com.financetracker.app.user;
 
+import com.financetracker.app.utils.exception.custom.IdNotMatchException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
-
-import java.util.List;
 
 @Api(value = "User Management")
 @RestController
@@ -22,7 +20,7 @@ public class UserController {
     @ApiOperation(value = "View a list of available users")
     @GetMapping
     public PagedUsersDTO getUsers(Pageable pageable) {
-        return getPagedUsersDTO(userService.getAll(pageable));
+        return userMapper.toPagedDTO(userService.getAllUsers(pageable));
     }
 
     @ApiOperation(value = "Get a user by Id")
@@ -33,19 +31,18 @@ public class UserController {
 
     @ApiOperation(value = "Update a user")
     @PutMapping("/{id}")
-    public UserDTO updateUser(@PathVariable String id, @RequestBody UserDTO userDTO) {
-        return userMapper.toDTO(userService.updateUser(id, userDTO));
+    public void updateUser(@PathVariable String id, @RequestBody UserDTO user) {
+        if (!user.id().equals(id)) {
+            throw new IdNotMatchException();
+        }
+        userService.updateUser(id, user);
     }
 
     @ApiOperation(value = "Delete a user")
     @DeleteMapping("/{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable String id) {
-        userService.delete(id);
+        userService.deleteUser(id);
     }
 
-    private PagedUsersDTO getPagedUsersDTO(Page<User> pagedUsers) {
-        List<UserDTO> users = userMapper.toDTOs(pagedUsers.getContent());
-        return new PagedUsersDTO(pagedUsers.getTotalPages(), pagedUsers.getNumber(), users);
-    }
 }

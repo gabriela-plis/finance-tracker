@@ -32,7 +32,7 @@ public class UserService {
             .isPresent();
     }
 
-    public Page<User> getAll(Pageable pageable) {
+    public Page<User> getAllUsers(Pageable pageable) {
         return userRepository.findAll(pageable);
 
     }
@@ -42,15 +42,15 @@ public class UserService {
             .orElseThrow(DocumentNotFoundException::new);
     }
 
-    public User updateUser(String id, UserDTO userToUpdate) {
+    public void updateUser(String id, UserDTO userToUpdate) {
         User existingUser = userRepository.findById(id)
             .orElseThrow(DocumentNotFoundException::new);
         userMapper.updateEntity(existingUser, userToUpdate);
 
-        return userRepository.save(existingUser);
+        userRepository.save(existingUser);
     }
 
-    public void delete(String id) {
+    public void deleteUser(String id) {
         User existingUser = userRepository.findById(id)
             .orElseThrow(DocumentNotFoundException::new);
 

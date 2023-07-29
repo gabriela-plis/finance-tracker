@@ -8,6 +8,6 @@ public record PagedIncomesDTO(
 
     int currentPage,
 
-    List<IncomeDTO> expenses
+    List<IncomeDTO> incomes
 
 ) { }

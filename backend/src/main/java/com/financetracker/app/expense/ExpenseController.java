@@ -4,13 +4,10 @@ import com.financetracker.app.security.authentication.AuthenticationService;
 import com.financetracker.app.utils.exception.custom.IdNotMatchException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/users/me/expenses")
@@ -24,7 +21,7 @@ public class ExpenseController {
     @GetMapping
     public PagedExpensesDTO getUserExpenses(Pageable pageable, Authentication authentication) {
         String userId = authenticationService.getUserId(authentication);
-        return getPagedExpensesDTO(expenseService.getUserExpenses(userId, pageable));
+        return expenseMapper.toPagedDTO(expenseService.getUserExpenses(userId, pageable));
     }
 
     @GetMapping("/{expenseId}")
@@ -36,7 +33,7 @@ public class ExpenseController {
     @GetMapping("/criteria")
     public PagedExpensesDTO getUserExpensesByCriteria(@Valid ExpenseSortingCriteriaDTO criteria, Pageable pageable, Authentication authentication) {
         String userId = authenticationService.getUserId(authentication);
-        return getPagedExpensesDTO(expenseService.getUserSortedExpenses(userId, criteria, pageable));
+        return expenseMapper.toPagedDTO(expenseService.getUserSortedExpenses(userId, criteria, pageable));
     }
 
     @PostMapping
@@ -60,12 +57,6 @@ public class ExpenseController {
     public void deleteExpense(@PathVariable String expenseId, Authentication authentication) {
         String userId = authenticationService.getUserId(authentication);
         expenseService.deleteExpense(expenseId, userId);
-    }
-
-    private PagedExpensesDTO getPagedExpensesDTO(Page<Expense> pagedExpenses) {
-        List<ExpenseDTO> expenses = expenseMapper.toDTOs(pagedExpenses.getContent());
-
-        return new PagedExpensesDTO(pagedExpenses.getTotalPages(), pagedExpenses.getNumber(), expenses);
     }
 
 }

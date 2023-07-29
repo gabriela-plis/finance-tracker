@@ -4,14 +4,10 @@ import com.financetracker.app.security.authentication.AuthenticationService;
 import com.financetracker.app.utils.exception.custom.IdNotMatchException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
 
 @RestController
 @RequestMapping("/users/me/incomes")
@@ -25,7 +21,7 @@ public class IncomeController {
     @GetMapping
     public PagedIncomesDTO getUserIncomes(Pageable pageable, Authentication authentication) {
         String userId = authenticationService.getUserId(authentication);
-        return getPagedIncomesDTO(incomeService.getUserIncomes(userId, pageable));
+        return incomeMapper.toPagedDTO(incomeService.getUserIncomes(userId, pageable));
     }
 
     @GetMapping("/{incomeId}")
@@ -37,7 +33,7 @@ public class IncomeController {
     @GetMapping("/criteria")
     public PagedIncomesDTO getUserIncomesByCriteria(@Valid IncomeSortingCriteriaDTO criteria, Pageable pageable, Authentication authentication) {
         String userId = authenticationService.getUserId(authentication);
-        return getPagedIncomesDTO(incomeService.getUserSortedIncomes(userId, criteria, pageable));
+        return incomeMapper.toPagedDTO(incomeService.getUserSortedIncomes(userId, criteria, pageable));
     }
 
     @PostMapping
@@ -64,8 +60,4 @@ public class IncomeController {
         incomeService.deleteIncome(incomeId, userId);
     }
 
-    private PagedIncomesDTO getPagedIncomesDTO(Page<Income> pagedIncomes) {
-        List<IncomeDTO> incomes = incomeMapper.toDTOs(pagedIncomes.getContent());
-        return new PagedIncomesDTO(pagedIncomes.getTotalPages(), pagedIncomes.getNumber(), incomes);
-    }
 }
