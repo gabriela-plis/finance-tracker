@@ -64,7 +64,7 @@ class UserServiceTest extends Specification {
         PageRequest pageable = PageRequest.of(0, 5)
 
         when:
-        Page<User> result = userService.getAll(pageable)
+        Page<User> result = userService.getAllUsers(pageable)
 
         then:
         1 * userRepository.findAll(pageable) >> getPagedUsers()
@@ -134,7 +134,7 @@ class UserServiceTest extends Specification {
         String id = "1"
 
         when:
-        userService.delete(id)
+        userService.deleteUser(id)
 
         then:
         1 * userRepository.findById(id) >> Optional.of(getUser())
@@ -146,7 +146,7 @@ class UserServiceTest extends Specification {
         String id = "1"
 
         when:
-        userService.delete(id)
+        userService.deleteUser(id)
 
         then:
         1 * userRepository.findById(id) >> Optional.empty()

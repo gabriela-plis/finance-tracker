@@ -3,6 +3,7 @@ package com.financetracker.app.user;
 import com.financetracker.app.utils.exception.custom.IdNotMatchException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +32,7 @@ public class UserController {
 
     @ApiOperation(value = "Update a user")
     @PutMapping("/{id}")
-    public void updateUser(@PathVariable String id, @RequestBody UserDTO user) {
+    public void updateUser(@PathVariable String id, @RequestBody @Valid UserDTO user) {
         if (!user.id().equals(id)) {
             throw new IdNotMatchException();
         }
