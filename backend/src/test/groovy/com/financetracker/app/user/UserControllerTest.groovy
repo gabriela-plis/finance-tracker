@@ -25,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @WebMvcTest(controllers = [UserController])
+@WithMockUser(roles = "ADMIN")
 class UserControllerTest extends MvcTestsConfig {
 
     @Autowired
@@ -36,8 +37,7 @@ class UserControllerTest extends MvcTestsConfig {
     @SpringBean
     UserMapper userMapper = Spy(getMapper(UserMapper))
 
-    @WithMockUser(roles = "ADMIN")
-    def"should return 200 (OK) and paged users"() {
+    def "should return 200 (OK) and paged users"() {
         when:
         def result = mvc
             .perform(get("/users"))
@@ -62,8 +62,7 @@ class UserControllerTest extends MvcTestsConfig {
         result.andExpect(jsonPath('$.users[1].roles[0]').value("USER"))
     }
 
-    @WithMockUser(roles = "ADMIN")
-    def"should return 200 (OK) and user"() {
+    def "should return 200 (OK) and user"() {
         given:
         String userId = "1"
 
@@ -84,8 +83,7 @@ class UserControllerTest extends MvcTestsConfig {
         result.andExpect(jsonPath('$.roles[0]').value("USER"))
     }
 
-    @WithMockUser(roles = "ADMIN")
-    def"should return 404 (NOT FOUND) when requesting user was not found"() {
+    def "should return 404 (NOT FOUND) when requesting user was not found"() {
         given:
         String userId = "1"
 
@@ -102,8 +100,7 @@ class UserControllerTest extends MvcTestsConfig {
         result.andExpect(status().isNotFound())
     }
 
-    @WithMockUser(roles = "ADMIN")
-    def"should return 200 (OK) when user is updated"() {
+    def "should return 200 (OK) when user is updated"() {
         given:
         String userId = "1"
         LinkedHashMap<String, Serializable> userToUpdate = [
@@ -128,8 +125,7 @@ class UserControllerTest extends MvcTestsConfig {
         result.andExpect(status().isOk())
     }
 
-    @WithMockUser(roles = "ADMIN")
-    def"should return 409 (CONFLICT) when ID user to update doesn't match ID in the URL"() {
+    def "should return 409 (CONFLICT) when ID user to update doesn't match ID in the URL"() {
         given:
         String userId = "2"
         LinkedHashMap<String, Serializable> userToUpdate = [
@@ -154,8 +150,7 @@ class UserControllerTest extends MvcTestsConfig {
         result.andExpect(status().isConflict())
     }
 
-    @WithMockUser(roles = "ADMIN")
-    def"should return 422 (UNPROCESSABLE ENTITY) when #scenario of user to update fail validation"() {
+    def "should return 422 (UNPROCESSABLE ENTITY) when #scenario of user to update fail validation"() {
         given:
         String userId = "2"
         LinkedHashMap<String, Serializable> userToUpdate = [
@@ -198,8 +193,7 @@ class UserControllerTest extends MvcTestsConfig {
         correctId | correctUsername                   | correctEmail      | null         | "null roles"
     }
 
-    @WithMockUser(roles = "ADMIN")
-    def"should return 204 (NO CONTENT) when user is deleted"() {
+    def "should return 204 (NO CONTENT) when user is deleted"() {
         given:
         String userId = "1"
 

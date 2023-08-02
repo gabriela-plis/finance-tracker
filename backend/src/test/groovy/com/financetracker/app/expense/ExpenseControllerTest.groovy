@@ -53,7 +53,7 @@ class ExpenseControllerTest extends MvcTestsConfig {
     AuthenticationService authenticationService = Mock()
 
     @WithMockUser
-    def"should return 200 (OK) and paged expenses"() {
+    def "should return 200 (OK) and paged expenses"() {
         given:
         String userId = "1"
 
@@ -85,7 +85,7 @@ class ExpenseControllerTest extends MvcTestsConfig {
     }
 
     @WithMockUser
-    def"should return 200 (OK) and expense"() {
+    def "should return 200 (OK) and expense"() {
         given:
         String expenseId = "1"
         String userId = "1"
@@ -110,7 +110,7 @@ class ExpenseControllerTest extends MvcTestsConfig {
     }
 
     @WithMockUser
-    def"should return 404 (NOT FOUND) when requesting expense was not found"() {
+    def "should return 404 (NOT FOUND) when requesting expense was not found"() {
         given:
         String expenseId = "1"
         String userId = "1"
@@ -130,7 +130,7 @@ class ExpenseControllerTest extends MvcTestsConfig {
     }
 
     @WithMockUser
-    def"should return 200 (OK) and paged, sorted expenses"() {
+    def "should return 200 (OK) and paged, sorted expenses"() {
         given:
         String userId = "1"
 
@@ -142,7 +142,7 @@ class ExpenseControllerTest extends MvcTestsConfig {
                 .param("priceMin", "10")
                 .param("priceMax", "150")
                 .param("categoryIds", "1", "2"))
-                .andDo(print())
+            .andDo(print())
 
         then:
         1 * authenticationService.getUserId(_ as Authentication) >> userId
@@ -167,7 +167,7 @@ class ExpenseControllerTest extends MvcTestsConfig {
     }
 
     @WithMockUser
-    def"should return 201 (CREATED) when expense is created"() {
+    def "should return 201 (CREATED) when expense is created"() {
         given:
         LinkedHashMap<String, Serializable> expenseToCreate = [
             date    : correctDate,
@@ -194,7 +194,7 @@ class ExpenseControllerTest extends MvcTestsConfig {
     }
 
     @WithMockUser
-    def"should return 422 (UNPROCESSABLE ENTITY) when #scenario of expense to create fail validation"() {
+    def "should return 422 (UNPROCESSABLE ENTITY) when #scenario of expense to create fail validation"() {
         given:
         LinkedHashMap<String, Serializable> expenseToCreate = [
             date    : date,
@@ -236,7 +236,7 @@ class ExpenseControllerTest extends MvcTestsConfig {
 
 
     @WithMockUser
-    def"should return 200 (OK) when expense is updated"() {
+    def "should return 200 (OK) when expense is updated"() {
         given:
         String expenseId = correctId
         String userId = "1"
@@ -264,7 +264,7 @@ class ExpenseControllerTest extends MvcTestsConfig {
     }
 
     @WithMockUser
-    def"should return 409 (CONFLICT) when ID expense to update doesn't match ID in the URL"() {
+    def "should return 409 (CONFLICT) when ID expense to update doesn't match ID in the URL"() {
         given:
         String expenseId = "2"
         LinkedHashMap<String, Serializable> expenseToUpdate = [
@@ -288,7 +288,7 @@ class ExpenseControllerTest extends MvcTestsConfig {
 
     @WithMockUser
     @Unroll
-    def"should return 422 (UNPROCESSABLE ENTITY) when #scenario of expense to update fail validation"() {
+    def "should return 422 (UNPROCESSABLE ENTITY) when #scenario of expense to update fail validation"() {
         given:
         String expenseId = "2"
         LinkedHashMap<String, Serializable> expenseToUpdate = [
@@ -331,7 +331,7 @@ class ExpenseControllerTest extends MvcTestsConfig {
     }
 
     @WithMockUser
-    def"should return 204 (NO CONTENT) when expense is deleted"() {
+    def "should return 204 (NO CONTENT) when expense is deleted"() {
         given:
         String expenseId = "1"
         String userId = "1"

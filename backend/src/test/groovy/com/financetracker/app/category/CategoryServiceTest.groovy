@@ -16,7 +16,7 @@ class CategoryServiceTest extends Specification {
 
     CategoryService categoryService = new CategoryService(categoryRepository, categoryMapper, userService)
 
-    def"should get all user categories"() {
+    def "should get all user categories"() {
         given:
         String userId = "1"
 
@@ -24,14 +24,14 @@ class CategoryServiceTest extends Specification {
         List<Category> result = categoryService.getUserCategories(userId)
 
         then:
-        1 * categoryRepository.findCategoriesByUserId(userId) >> getCategoryEntities()
+        1 * categoryRepository.findCategoriesByUserId(userId) >> getCategories()
 
         and:
-        result == getCategoryEntities()
+        result == getCategories()
 
     }
 
-    def"should get category by id"() {
+    def "should get category by id"() {
         given:
         String categoryId = "1"
         String userId = "1"
@@ -46,7 +46,7 @@ class CategoryServiceTest extends Specification {
         result == getCategory()
     }
 
-    def"should throw DocumentNotFoundException when category was not found by id"() {
+    def "should throw DocumentNotFoundException when category was not found by id"() {
         given:
         String categoryId = "1"
         String userId = "1"
@@ -61,7 +61,7 @@ class CategoryServiceTest extends Specification {
         thrown(DocumentNotFoundException)
     }
 
-    def"should delete category"() {
+    def "should delete category"() {
         given:
         String categoryId = "1"
         String userId = "1"
@@ -73,12 +73,12 @@ class CategoryServiceTest extends Specification {
         1 * categoryRepository.deleteCategoryByIdAndUserId(categoryId, userId)
     }
 
-    def"should add category"() {
+    def "should add category"() {
         given:
         String userId = 1
         AddCategoryDTO category = new AddCategoryDTO("Food")
 
-        userService.getUserById(userId) >> getUserEntity()
+        userService.getUserById(userId) >> getUser()
 
         when:
         categoryService.createCategory(userId, category)
@@ -89,18 +89,18 @@ class CategoryServiceTest extends Specification {
     }
 
     private Category getCategory() {
-        return new Category("1", "Food", getUserEntity())
+        return new Category("1", "Food", getUser())
     }
 
-    private List<Category> getCategoryEntities() {
+    private List<Category> getCategories() {
         return List.of(
-            new Category("1", "Food", getUserEntity()),
-            new Category("2", "Healthcare", getUserEntity()),
-            new Category("3", "Transportation", getUserEntity()),
+            new Category("1", "Food", getUser()),
+            new Category("2", "Healthcare", getUser()),
+            new Category("3", "Transportation", getUser()),
         )
     }
 
-    private User getUserEntity() {
+    private User getUser() {
         return new User("1", "Anne", "anne@gmail.com", "anne123", List.of(Role.USER))
     }
 }

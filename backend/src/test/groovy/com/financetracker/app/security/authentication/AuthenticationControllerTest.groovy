@@ -1,6 +1,7 @@
 package com.financetracker.app.security.authentication
 
 import com.financetracker.app.config.MvcTestsConfig
+import com.financetracker.app.utils.exception.custom.UserAlreadyExistException
 import org.spockframework.spring.SpringBean
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -10,7 +11,7 @@ import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.MockMvc
 import spock.lang.Unroll
 
-import static com.financetracker.app.security.authentication.AuthenticationControllerTest.CorrectData.*
+import static AuthenticationCorrectData.*
 import static groovy.json.JsonOutput.toJson
 import static org.springframework.http.MediaType.APPLICATION_JSON
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
@@ -19,6 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @WebMvcTest(controllers = [AuthenticationController])
+@WithMockUser
 class AuthenticationControllerTest extends MvcTestsConfig {
 
     @Autowired
@@ -27,7 +29,6 @@ class AuthenticationControllerTest extends MvcTestsConfig {
     @SpringBean
     AuthenticationService authenticationService = Mock()
 
-    @WithMockUser
     def "should return 200 (OK) when user is registered"() {
         given:
         LinkedHashMap<String, Serializable> userToRegister = [
@@ -51,7 +52,29 @@ class AuthenticationControllerTest extends MvcTestsConfig {
         result.andExpect(status().isOk())
     }
 
-    @WithMockUser
+    def "should return 409 (CONFLICT) when someone try register but user with this email already exist"() {
+        given:
+        LinkedHashMap<String, Serializable> userToRegister = [
+            username: correctUsername,
+            email   : correctEmail,
+            password: correctPassword
+        ]
+
+        when:
+        def result = mvc
+            .perform(post("/auth/register")
+                .contentType(APPLICATION_JSON)
+                .content(toJson(userToRegister))
+                .accept(APPLICATION_JSON))
+            .andDo(print())
+
+        then:
+        1 * authenticationService.registerUser(_ as RegisterDetailsDTO) >> { throw new UserAlreadyExistException() }
+
+        and:
+        result.andExpect(status().isConflict())
+    }
+
     @Unroll
     def "should return 422 (UNPROCESSABLE ENTITY) when #scenario fail validation during registration"() {
         given:
@@ -99,7 +122,6 @@ class AuthenticationControllerTest extends MvcTestsConfig {
         correctUsername                   | "anne@gmail"      | correctPassword                  | "domain part without dot email"
     }
 
-    @WithMockUser
     def "should return 200 (OK) and JWT cookie in header when user is logged in"() {
         given:
         LinkedHashMap<String, Serializable> loginData = [
@@ -138,7 +160,6 @@ class AuthenticationControllerTest extends MvcTestsConfig {
         result.andExpect(cookie().httpOnly(cookieName, true))
     }
 
-    @WithMockUser
     def "should return 401 (UNAUTHORIZED) when user is failed login"() {
         given:
         LinkedHashMap<String, Serializable> loginData = [
@@ -161,7 +182,6 @@ class AuthenticationControllerTest extends MvcTestsConfig {
         result.andExpect(status().isUnauthorized())
     }
 
-    @WithMockUser
     @Unroll
     def "should return 422 (UNPROCESSABLE ENTITY) when #scenario failed validation during login"() {
         given:
@@ -202,11 +222,5 @@ class AuthenticationControllerTest extends MvcTestsConfig {
         "annegmail.com"   | correctPassword                  | "no @ symbol email"
         "anne@"           | correctPassword                  | "no domain part email"
         "anne@gmail"      | correctPassword                  | "domain part without dot email"
-    }
-
-    protected static class CorrectData {
-        public static final String correctUsername = "anne"
-        public static final String correctEmail = "anne@gmail.com"
-        public static final String correctPassword = "anne123!Anne"
     }
 }

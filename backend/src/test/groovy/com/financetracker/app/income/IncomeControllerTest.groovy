@@ -27,6 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @WebMvcTest(controllers = IncomeController.class)
+@WithMockUser
 class IncomeControllerTest extends MvcTestsConfig {
 
     @Autowired
@@ -41,8 +42,7 @@ class IncomeControllerTest extends MvcTestsConfig {
     @SpringBean
     AuthenticationService authenticationService = Mock()
 
-    @WithMockUser
-    def"should return 200 (OK) and paged incomes"() {
+    def "should return 200 (OK) and paged incomes"() {
         given:
         String userId = "1"
 
@@ -71,8 +71,7 @@ class IncomeControllerTest extends MvcTestsConfig {
         result.andExpect(jsonPath('$.incomes[1].description').value("income2"))
     }
 
-    @WithMockUser
-    def"should return 200 (OK) and income"() {
+    def "should return 200 (OK) and income"() {
         given:
         String incomeId = "1"
         String userId = "1"
@@ -95,8 +94,7 @@ class IncomeControllerTest extends MvcTestsConfig {
         result.andExpect(jsonPath('$.description').value("income1"))
     }
 
-    @WithMockUser
-    def"should return 404 (NOT FOUND) when requesting income was not found"() {
+    def "should return 404 (NOT FOUND) when requesting income was not found"() {
         given:
         String incomeId = "1"
         String userId = "1"
@@ -115,8 +113,7 @@ class IncomeControllerTest extends MvcTestsConfig {
         result.andExpect(status().isNotFound())
     }
 
-    @WithMockUser
-    def"should return 200 (OK) and paged, sorted incomes"() {
+    def "should return 200 (OK) and paged, sorted incomes"() {
         given:
         String userId = "1"
 
@@ -150,8 +147,7 @@ class IncomeControllerTest extends MvcTestsConfig {
         result.andExpect(jsonPath('$.incomes[1].description').value("income2"))
     }
 
-    @WithMockUser
-    def"should return 201 (CREATED) when income is created"() {
+    def "should return 201 (CREATED) when income is created"() {
         given:
         LinkedHashMap<String, Serializable> incomeToCreate = [
             date       : correctDate,
@@ -177,8 +173,7 @@ class IncomeControllerTest extends MvcTestsConfig {
         result.andExpect(status().isCreated())
     }
 
-    @WithMockUser
-    def"should return 422 (UNPROCESSABLE ENTITY) when #scenario of income to create fail validation"() {
+    def "should return 422 (UNPROCESSABLE ENTITY) when #scenario of income to create fail validation"() {
         given:
         LinkedHashMap<String, Serializable> incomeToCreate = [
             date       : date,
@@ -215,8 +210,7 @@ class IncomeControllerTest extends MvcTestsConfig {
         correctDate           | correctAmount | "bbgn4X5phRkUrtYSACFDCSKdlJgwPho27tQwLAFBwde76RNoEsG7dOwF7JOauPlvQHJhopwAJVruOHCDoKGkXBcYHOWa2eRoLt7se" | "too long (>100 characters) description"
     }
 
-    @WithMockUser
-    def"should return 200 (OK) when income is updated"() {
+    def "should return 200 (OK) when income is updated"() {
         given:
         String incomeId = correctId
         LinkedHashMap<String, Serializable> incomeToUpdate = [
@@ -244,8 +238,7 @@ class IncomeControllerTest extends MvcTestsConfig {
         result.andExpect(status().isOk())
     }
 
-    @WithMockUser
-    def"should return 409 (CONFLICT) when ID income to update doesn't match ID in the URL"() {
+    def "should return 409 (CONFLICT) when ID income to update doesn't match ID in the URL"() {
         given:
         String incomeId = "2"
         LinkedHashMap<String, Serializable> incomeToUpdate = [
@@ -267,8 +260,7 @@ class IncomeControllerTest extends MvcTestsConfig {
         result.andExpect(status().isConflict())
     }
 
-    @WithMockUser
-    def"should return 422 (UNPROCESSABLE ENTITY) when #scenario of income to update fail validation"() {
+    def "should return 422 (UNPROCESSABLE ENTITY) when #scenario of income to update fail validation"() {
         given:
         String incomeId = "2"
         LinkedHashMap<String, Serializable> incomeToUpdate = [
@@ -307,8 +299,7 @@ class IncomeControllerTest extends MvcTestsConfig {
         correctId | correctDate           | correctAmount | "bbgn4X5phRkUrtYSACFDCSKdlJgwPho27tQwLAFBwde76RNoEsG7dOwF7JOauPlvQHJhopwAJVruOHCDoKGkXBcYHOWa2eRoLt7se" | "too long (>100 characters) description"
     }
 
-    @WithMockUser
-    def"should return 204 (NO CONTENT) when income is deleted"() {
+    def "should return 204 (NO CONTENT) when income is deleted"() {
         given:
         String incomeId = "1"
         String userId = "1"

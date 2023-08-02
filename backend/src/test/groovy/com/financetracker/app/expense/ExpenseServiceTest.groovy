@@ -30,7 +30,7 @@ class ExpenseServiceTest extends Specification {
 
     ExpenseService expenseService = new ExpenseService(expenseRepository, expenseMapper, userService, converter)
 
-    def"should get all user expenses"() {
+    def "should get all user expenses"() {
         given:
         String userId = "1"
         PageRequest pageable = PageRequest.of(0, 5)
@@ -45,7 +45,7 @@ class ExpenseServiceTest extends Specification {
         result == getPagedExpenses()
     }
 
-    def"should get expense by id"() {
+    def "should get expense by id"() {
         given:
         String expenseId = "1"
         String userId = "1"
@@ -60,7 +60,7 @@ class ExpenseServiceTest extends Specification {
         result == getExpense()
     }
 
-    def"should throw DocumentNotFoundException when expense was not found by id"() {
+    def "should throw DocumentNotFoundException when expense was not found by id"() {
         given:
         String expenseId = "1"
         String userId = "1"
@@ -75,7 +75,7 @@ class ExpenseServiceTest extends Specification {
         thrown(DocumentNotFoundException)
     }
 
-    def"should get user sorted expenses - with category ids criterium"() {
+    def "should get user sorted expenses - with category ids criterium"() {
         given:
         String userId = "1"
         PageRequest pageable = PageRequest.of(0, 5)
@@ -91,7 +91,7 @@ class ExpenseServiceTest extends Specification {
         result == getPagedExpenses()
     }
 
-    def"should get user sorted expenses - without category ids criterium"() {
+    def "should get user sorted expenses - without category ids criterium"() {
         given:
         String userId = "1"
         PageRequest pageable = PageRequest.of(0, 5)
@@ -107,7 +107,7 @@ class ExpenseServiceTest extends Specification {
         result == getPagedExpenses()
     }
 
-    def"should create expense"() {
+    def "should create expense"() {
         given:
         String userId = "1"
         AddExpenseDTO expenseToAdd = new AddExpenseDTO(LocalDate.of(2020, 1, 3), new CategoryDTO("1", "Food"), BigDecimal.valueOf(27.50))
@@ -120,7 +120,7 @@ class ExpenseServiceTest extends Specification {
         1 * expenseRepository.insert(_ as Expense)
     }
 
-    def"should update expense"() {
+    def "should update expense"() {
         given:
         String userId = "1"
         ExpenseDTO expenseToUpdate = getExpenseDTO()
@@ -133,7 +133,7 @@ class ExpenseServiceTest extends Specification {
         1 * expenseRepository.save(_ as Expense)
     }
 
-    def"should delete expense"() {
+    def "should delete expense"() {
         given:
         String expenseId = "1"
         String userId = "1"

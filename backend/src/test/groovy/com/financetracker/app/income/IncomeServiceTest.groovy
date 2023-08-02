@@ -13,7 +13,7 @@ import spock.lang.Specification
 
 import java.time.LocalDate
 
-class IncomeServiceTest extends Specification{
+class IncomeServiceTest extends Specification {
 
     IncomeRepository incomeRepository = Mock()
     IncomeMapper incomeMapper = Mappers.getMapper(IncomeMapper)
@@ -21,7 +21,7 @@ class IncomeServiceTest extends Specification{
 
     IncomeService incomeService = new IncomeService(incomeRepository, incomeMapper, userService)
 
-    def"should get all user incomes"() {
+    def "should get all user incomes"() {
         given:
         String userId = "1"
         PageRequest pageable = PageRequest.of(0, 5)
@@ -36,7 +36,7 @@ class IncomeServiceTest extends Specification{
         result == getPagedIncomes()
     }
 
-    def"should get income by id"() {
+    def "should get income by id"() {
         given:
         String incomeId = "1"
         String userId = "1"
@@ -51,7 +51,7 @@ class IncomeServiceTest extends Specification{
         result == getIncome()
     }
 
-    def"should throw DocumentNotFoundException when income was not found by id"() {
+    def "should throw DocumentNotFoundException when income was not found by id"() {
         given:
         String incomeId = "1"
         String userId = "1"
@@ -66,10 +66,10 @@ class IncomeServiceTest extends Specification{
         thrown(DocumentNotFoundException)
     }
 
-    def"should get user sorted incomes"() {
+    def "should get user sorted incomes"() {
         given:
         String userId = "1"
-        PageRequest pageable = PageRequest.of(0 ,5)
+        PageRequest pageable = PageRequest.of(0, 5)
         IncomeSortingCriteriaDTO sortingCriteria = new IncomeSortingCriteriaDTO(LocalDate.of(2020, 1, 1), LocalDate.of(2022, 1, 1), BigDecimal.valueOf(50), BigDecimal.valueOf(300), null)
 
         when:
@@ -82,7 +82,7 @@ class IncomeServiceTest extends Specification{
         result == getPagedIncomes()
     }
 
-    def"should create income"() {
+    def "should create income"() {
         given:
         String userId = "1"
         AddIncomeDTO incomeToAdd = new AddIncomeDTO(LocalDate.of(2020, 1, 1), BigDecimal.valueOf(100.50), "income")
@@ -95,7 +95,7 @@ class IncomeServiceTest extends Specification{
         1 * incomeRepository.insert(_ as Income)
     }
 
-    def"should update income"() {
+    def "should update income"() {
         given:
         String userId = "1"
         IncomeDTO incomeToUpdate = getIncomeDTO()
@@ -108,7 +108,7 @@ class IncomeServiceTest extends Specification{
         1 * incomeRepository.save(_ as Income)
     }
 
-    def"should delete income"() {
+    def "should delete income"() {
         given:
         String incomeId = "1"
         String userId = "1"

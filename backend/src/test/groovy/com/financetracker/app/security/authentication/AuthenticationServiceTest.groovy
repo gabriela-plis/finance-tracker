@@ -19,7 +19,7 @@ class AuthenticationServiceTest extends Specification {
 
     AuthenticationService authenticationService = new AuthenticationService(jwtService, userService, passwordEncoder)
 
-    def"should login user and return response cookie"() {
+    def "should login user and return response cookie"() {
         given:
         LoginDetailsDTO loginDetails = getLoginDetails()
         ResponseCookie responseCookie = ResponseCookie.from("jwtToken").build()
@@ -37,7 +37,7 @@ class AuthenticationServiceTest extends Specification {
 
     }
 
-    def"should throw BadCredentialsException when user with matched login data doesn't exist"() {
+    def "should throw BadCredentialsException when user with matched login data doesn't exist"() {
         given:
         LoginDetailsDTO loginDetails = getLoginDetails()
 
@@ -52,7 +52,7 @@ class AuthenticationServiceTest extends Specification {
         thrown(BadCredentialsException)
     }
 
-    def"should register user"() {
+    def "should register user"() {
         given:
         RegisterDetailsDTO registerDetails = getRegisterDetails()
 
@@ -64,7 +64,7 @@ class AuthenticationServiceTest extends Specification {
         1 * userService.registerUser(registerDetails)
     }
 
-    def"should throw UserAlreadyExistException during registration if given email already exist in database"() {
+    def "should throw UserAlreadyExistException during registration if given email already exist in database"() {
         given:
         RegisterDetailsDTO registerDetails = getRegisterDetails()
 
@@ -78,7 +78,7 @@ class AuthenticationServiceTest extends Specification {
         thrown(UserAlreadyExistException)
     }
 
-    def"should get user id"() {
+    def "should get user id"() {
         given:
         Authentication authentication = new UsernamePasswordAuthenticationToken(new CustomUserDetails("1", "anne123", List.of(Role.USER)), null, null)
         String expected = "1"

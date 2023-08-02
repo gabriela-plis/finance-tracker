@@ -24,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 
 @WebMvcTest(controllers = CategoryController.class)
+@WithMockUser
 class CategoryControllerTest extends MvcTestsConfig {
 
     @Autowired
@@ -38,19 +39,18 @@ class CategoryControllerTest extends MvcTestsConfig {
     @SpringBean
     AuthenticationService authenticationService = Mock()
 
-    @WithMockUser
-    def"should return 200 (OK) and all user categories"() {
+    def "should return 200 (OK) and all user categories"() {
         given:
         String userId = "1"
 
         when:
         def result = mvc
-        .perform(get("/users/me/categories"))
-        .andDo(print())
+            .perform(get("/users/me/categories"))
+            .andDo(print())
 
         then:
         1 * authenticationService.getUserId(_ as Authentication) >> userId
-        1 * categoryService.getUserCategories(userId) >> getCategoryEntities()
+        1 * categoryService.getUserCategories(userId) >> getCategories()
         1 * categoryMapper.toDTOs(_ as List<Category>)
 
         and:
@@ -59,8 +59,7 @@ class CategoryControllerTest extends MvcTestsConfig {
         result.andExpect(jsonPath('$.[*].name', containsInAnyOrder("Food", "Healthcare", "Transportation")))
     }
 
-    @WithMockUser
-    def"should return 200 (OK) and category"() {
+    def "should return 200 (OK) and category"() {
         given:
         String categoryId = "1"
         String userId = "1"
@@ -81,8 +80,7 @@ class CategoryControllerTest extends MvcTestsConfig {
         result.andExpect(jsonPath('$.name').value("Food"))
     }
 
-    @WithMockUser
-    def"should return 404 (NOT FOUND) when requesting category was not found"() {
+    def "should return 404 (NOT FOUND) when requesting category was not found"() {
         given:
         String categoryId = "1"
         String userId = "1"
@@ -101,8 +99,7 @@ class CategoryControllerTest extends MvcTestsConfig {
         result.andExpect(status().isNotFound())
     }
 
-    @WithMockUser
-    def"should return 201 (CREATED) when category is created"() {
+    def "should return 201 (CREATED) when category is created"() {
         given:
         LinkedHashMap<String, Serializable> categoryToAdd = [
             name: "food"
@@ -126,9 +123,8 @@ class CategoryControllerTest extends MvcTestsConfig {
         result.andExpect(status().isCreated())
     }
 
-    @WithMockUser
     @Unroll
-    def"should return 422 (UNPROCESSABLE ENTITY) when category to add fail validation"() {
+    def "should return 422 (UNPROCESSABLE ENTITY) when category to add fail validation"() {
         given:
         LinkedHashMap<String, Serializable> categoryToAdd = [
             name: categoryName
@@ -149,8 +145,7 @@ class CategoryControllerTest extends MvcTestsConfig {
         categoryName << ["", " ", null]
     }
 
-    @WithMockUser
-    def"should return 204 (NO CONTENT) when category is deleted"() {
+    def "should return 204 (NO CONTENT) when category is deleted"() {
         given:
         String categoryId = "1"
         String userId = "1"
@@ -170,18 +165,18 @@ class CategoryControllerTest extends MvcTestsConfig {
 
 
     private Category getCategory() {
-        return new Category("1", "Food", getUserEntity())
+        return new Category("1", "Food", getUser())
     }
 
-    private List<Category> getCategoryEntities() {
+    private List<Category> getCategories() {
         return List.of(
-            new Category("1", "Food", getUserEntity()),
-            new Category("2", "Healthcare", getUserEntity()),
-            new Category("3", "Transportation", getUserEntity()),
+            new Category("1", "Food", getUser()),
+            new Category("2", "Healthcare", getUser()),
+            new Category("3", "Transportation", getUser()),
         )
     }
 
-    private User getUserEntity() {
+    private User getUser() {
         return new User("1", "Anne", "anne@gmail.com", "anne123", List.of(Role.USER))
     }
 }

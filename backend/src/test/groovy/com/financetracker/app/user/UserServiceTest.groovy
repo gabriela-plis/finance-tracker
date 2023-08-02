@@ -18,7 +18,7 @@ class UserServiceTest extends Specification {
 
     UserService userService = new UserService(userRepository, userMapper, passwordEncoder)
 
-    def"should register user"() {
+    def "should register user"() {
         given:
         RegisterDetailsDTO registerDetails = new RegisterDetailsDTO("anne", "anne@gmail.com", "anne123")
         User userWithRole = new User(null, "anne", "anne@gmail.com", "anne123", List.of(Role.USER))
@@ -31,7 +31,7 @@ class UserServiceTest extends Specification {
         1 * userRepository.insert(userWithRole)
     }
 
-    def"should return true if user exist"() {
+    def "should return true if user exist"() {
         given:
         String email = "anne@gmail.com"
 
@@ -45,7 +45,7 @@ class UserServiceTest extends Specification {
         result == true
     }
 
-    def"should return false if user doesn't exist"() {
+    def "should return false if user doesn't exist"() {
         given:
         String email = "anne@gmail.com"
 
@@ -59,7 +59,7 @@ class UserServiceTest extends Specification {
         result == false
     }
 
-    def"should get all users with pagination"() {
+    def "should get all users with pagination"() {
         given:
         PageRequest pageable = PageRequest.of(0, 5)
 
@@ -73,7 +73,7 @@ class UserServiceTest extends Specification {
         result == getPagedUsers()
     }
 
-    def"should get user by id"() {
+    def "should get user by id"() {
         given:
         String id = "1"
 
@@ -87,7 +87,7 @@ class UserServiceTest extends Specification {
         result == getUser()
     }
 
-    def"should throw DocumentNotFoundException if user searching by id doesn't exist"() {
+    def "should throw DocumentNotFoundException if user searching by id doesn't exist"() {
         given:
         String id = "1"
 
@@ -101,7 +101,7 @@ class UserServiceTest extends Specification {
         thrown(DocumentNotFoundException)
     }
 
-    def"should update user"() {
+    def "should update user"() {
         given:
         String id = "1"
         UserDTO userToUpdate = GroovyMock()
@@ -114,7 +114,7 @@ class UserServiceTest extends Specification {
         1 * userRepository.save(_ as User)
     }
 
-    def"should throw DocumentNotFoundException if user to update searching by given id doesn't exist"() {
+    def "should throw DocumentNotFoundException if user to update searching by given id doesn't exist"() {
         given:
         String id = "1"
         UserDTO userToUpdate = GroovyMock()
@@ -129,7 +129,7 @@ class UserServiceTest extends Specification {
         thrown(DocumentNotFoundException)
     }
 
-    def"should delete user"() {
+    def "should delete user"() {
         given:
         String id = "1"
 
@@ -141,7 +141,7 @@ class UserServiceTest extends Specification {
         1 * userRepository.delete(getUser())
     }
 
-    def"should throw DocumentNotFoundException if user to delete searching by given id doesn't exist"() {
+    def "should throw DocumentNotFoundException if user to delete searching by given id doesn't exist"() {
         given:
         String id = "1"
 

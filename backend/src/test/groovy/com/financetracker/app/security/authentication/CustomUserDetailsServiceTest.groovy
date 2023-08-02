@@ -12,7 +12,7 @@ class CustomUserDetailsServiceTest extends Specification {
 
     CustomUserDetailsService customUserDetailsService = new CustomUserDetailsService(userRepository)
 
-    def"should load user by username"() {
+    def "should load user by username"() {
         given:
         String id = "1"
         CustomUserDetails expected = new CustomUserDetails("1", "anne123", List.of(Role.USER))
@@ -27,7 +27,7 @@ class CustomUserDetailsServiceTest extends Specification {
         result == expected
     }
 
-    def"should not load user by username and throw UsernameNotFoundException"() {
+    def "should not load user by username and throw UsernameNotFoundException"() {
         given:
         String id = "1"
 
