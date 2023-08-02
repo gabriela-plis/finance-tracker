@@ -16,7 +16,7 @@ class CategoryServiceTest extends Specification {
 
     CategoryService categoryService = new CategoryService(categoryRepository, categoryMapper, userService)
 
-    def "should get all user categories"() {
+    def"should get all user categories"() {
         given:
         String userId = "1"
 
@@ -61,7 +61,7 @@ class CategoryServiceTest extends Specification {
         thrown(DocumentNotFoundException)
     }
 
-    def "should delete category"() {
+    def"should delete category"() {
         given:
         String categoryId = "1"
         String userId = "1"
