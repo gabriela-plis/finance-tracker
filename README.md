@@ -23,17 +23,13 @@ Finance Tracker is REST service oriented backend application for budget managmen
   - Mapstruct
 
 ### Backend Testing
-
   - Spock
   - Testcontainers
-  - Liquibase
 
 ### Database
-
   - MongoDB
 
 ### Other
-
   - Docker
   - Swagger
 
