@@ -1,0 +1,10 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://admin:verysecret@localhost:27017/database?authSource=admin
+      auto-index-creation: true
+      database: database
+  rabbitmq:
+    queue: ""
+    exchange: ""
+    routing-key: ""
