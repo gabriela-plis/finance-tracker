@@ -16,24 +16,14 @@ public class ReportsExecutor {
 
     @Scheduled(cron = "0 0 8 1 1/1 *")
     public void executeMonthlyReports() {
-        //find generators for monthly reports
-        ReportsGenerator generator = generators.stream().filter(g -> g instanceof MonthlyReportsGenerator)
-            .findFirst()
-            .orElseThrow();
-
-        //generate reports (which layer should connect with database to retrieve appropriate incomes, expenses - executor or specific generator?)
+        ReportsGenerator generator = getGenerator(MonthlyReportsGenerator.class);
         List<Report> reports = generator.generate();
-
-        //send it
         sendReports(reports);
     }
 
     @Scheduled(cron = "0 0 8 * * MON")
     public void executeWeeklyReports() {
-        ReportsGenerator generator = generators.stream().filter(g -> g instanceof WeeklyReportsGenerator)
-            .findFirst()
-            .orElseThrow();
-
+        ReportsGenerator generator = getGenerator(WeeklyReportsGenerator.class);
         List<Report> reports = generator.generate();
         sendReports(reports);
     }
@@ -42,5 +32,12 @@ public class ReportsExecutor {
         for(Report report : reports) {
             queueSender.send(report);
         }
+    }
+
+    private <T extends ReportsGenerator> T getGenerator(Class<T> clazz) {
+        return generators.stream().filter(clazz::isInstance)
+            .map(clazz::cast)  //TODO wonder why it needs to be casting to T
+            .findFirst()
+            .orElseThrow(IllegalStateException::new); //TODO what type of exception should be throw
     }
 }

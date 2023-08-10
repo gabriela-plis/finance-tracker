@@ -16,6 +16,7 @@ import java.util.List;
 import static com.financetracker.app.expense.ExpenseOperationsPerformer.*;
 import static com.financetracker.app.expense.ExpenseOperationsPerformer.getTotalExpenses;
 import static com.financetracker.app.income.IncomeOperationsPerformer.getTotalIncomes;
+import static com.financetracker.app.report.db.ReportType.*;
 
 @RequiredArgsConstructor
 public class WeeklyReportsGenerator implements ReportsGenerator {
@@ -31,13 +32,13 @@ public class WeeklyReportsGenerator implements ReportsGenerator {
     }
 
     private List<GeneralWeeklyReport> getGeneralWeeklyReports() {
-        List<UserEntity> subscribers = userService.getReportSubscribers(ReportType.GENERAL_WEEKLY_REPORT);
+        List<UserEntity> subscribers = userService.getReportSubscribers(GENERAL_WEEKLY_REPORT);
 
         List<GeneralWeeklyReport> reports = new ArrayList<>();
 
         for(UserEntity subscriber : subscribers) {
-            List<IncomeEntity> incomes = incomeService.getLastMonthIncomes("");
-            List<ExpenseEntity> expenses = expenseService.getLastMonthExpenses("");
+            List<IncomeEntity> incomes = incomeService.getLastMonthIncomes(subscriber.getId());
+            List<ExpenseEntity> expenses = expenseService.getLastMonthExpenses(subscriber.getId());
 
             GeneralWeeklyReport report = GeneralWeeklyReport.builder()
                 .user(subscriber)

@@ -1,4 +1,4 @@
-package com.financetracker.app;
+package com.financetracker.app.user;
 
 public enum Role {
     USER,

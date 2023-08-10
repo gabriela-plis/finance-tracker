@@ -1,6 +1,5 @@
 package com.financetracker.app.user;
 
-import com.financetracker.app.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,10 +10,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.ArrayList;
 import java.util.List;
 
+@Document(collection = "users")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "users")
 public class UserEntity {
     @Id
     private String id;

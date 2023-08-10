@@ -1,16 +1,20 @@
 package com.financetracker.app.user;
 
-import com.financetracker.app.report.types.ReportType;
+import com.financetracker.app.report.db.ReportTypeService;
+import com.financetracker.app.report.db.ReportType;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final ReportTypeService reportService;
 
     public List<UserEntity> getReportSubscribers(ReportType reportType) {
-        return null;
+        return reportService.getReport(reportType).getSubscribers();
     }
 }
