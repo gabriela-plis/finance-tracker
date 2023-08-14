@@ -13,6 +13,6 @@ public record GeneralWeeklyReport (
     BigDecimal totalExpenses,
     ExpenseEntity largestExpense,
     BigDecimal averageDailyExpense,
-    BigDecimal totalIncome,
+    BigDecimal totalIncomes,
     BigDecimal budgetSummary
 ) implements Report { }

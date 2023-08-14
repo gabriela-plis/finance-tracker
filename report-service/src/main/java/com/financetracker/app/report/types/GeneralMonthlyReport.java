@@ -16,6 +16,6 @@ public record GeneralMonthlyReport(
     BigDecimal averageWeeklyExpense,
     DateRange weekWithHighestExpenses,
     DayOfWeek dayWithHighestAverageExpense,
-    BigDecimal totalIncome,
+    BigDecimal totalIncomes,
     BigDecimal budgetSummary
 ) implements Report { }
