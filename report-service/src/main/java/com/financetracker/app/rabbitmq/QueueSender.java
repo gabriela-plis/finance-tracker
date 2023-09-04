@@ -1,6 +1,6 @@
 package com.financetracker.app.rabbitmq;
 
-import com.financetracker.app.mail.MailDTO;
+import com.financetracker.api.mail.MailDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;

@@ -1,8 +1,8 @@
 package com.financetracker.app.report;
 
-import com.financetracker.app.mail.MailDTO;
+import com.financetracker.api.mail.MailDTO;
+import com.financetracker.api.mail.Template;
 import com.financetracker.app.mail.MailService;
-import com.financetracker.app.mail.Template;
 import com.financetracker.app.report.generators.MonthlyReportsGenerator;
 import com.financetracker.app.report.generators.ReportsGenerator;
 import com.financetracker.app.report.generators.WeeklyReportsGenerator;

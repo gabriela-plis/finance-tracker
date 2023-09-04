@@ -1,10 +1,10 @@
 package com.financetracker.app.report.generators;
 
+import com.financetracker.api.mail.Template;
 import com.financetracker.app.expense.ExpenseEntity;
 import com.financetracker.app.expense.ExpenseService;
 import com.financetracker.app.income.IncomeEntity;
 import com.financetracker.app.income.IncomeService;
-import com.financetracker.app.mail.Template;
 import com.financetracker.app.report.types.DateRange;
 import com.financetracker.app.report.types.GeneralMonthlyReport;
 import com.financetracker.app.user.UserEntity;

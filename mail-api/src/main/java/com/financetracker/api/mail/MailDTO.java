@@ -1,4 +1,4 @@
-package com.financetracker.app.mail;
+package com.financetracker.api.mail;
 
 import lombok.Builder;
 

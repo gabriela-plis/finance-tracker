@@ -1,8 +1,9 @@
 package com.financetracker.app.mail;
 
+import com.financetracker.api.mail.MailDTO;
+import com.financetracker.api.mail.Template;
 import com.financetracker.app.rabbitmq.QueueSender;
 import com.financetracker.app.report.types.Report;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import java.lang.reflect.Field;
