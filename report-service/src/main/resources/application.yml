@@ -4,7 +4,7 @@ spring:
       uri: mongodb://admin:verysecret@localhost:27017/database?authSource=admin
       auto-index-creation: true
       database: database
-  rabbitmq:
-    queue: ""
-    exchange: ""
-    routing-key: ""
+    rabbitmq:
+      queue: mail-service.mail.send
+      exchange: mail-service.mail.ex
+      routing-key: mail.send

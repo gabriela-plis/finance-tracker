@@ -5,9 +5,9 @@ spring:
       auto-index-creation: true
       database: database
     rabbitmq:
-      queue: ""
-      exchange: ""
-      routing-key: ""
+      queue: mail-service.mail.send
+      exchange: mail-service.mail.ex
+      routing-key: mail.send
 
 finance-tracker:
   jwt:

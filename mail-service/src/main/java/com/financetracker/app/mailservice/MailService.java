@@ -1,5 +1,6 @@
 package com.financetracker.app.mailservice;
 
+import com.financetracker.api.mail.MailDTO;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
