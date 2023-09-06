@@ -1,10 +1,10 @@
 spring:
+  rabbitmq:
+    queue: mail-service.mail.send
+    exchange: mail-service.mail.ex
+    routing-key: mail.send
   data:
     mongodb:
       uri: mongodb://admin:verysecret@localhost:27017/database?authSource=admin
       auto-index-creation: true
       database: database
-    rabbitmq:
-      queue: mail-service.mail.send
-      exchange: mail-service.mail.ex
-      routing-key: mail.send

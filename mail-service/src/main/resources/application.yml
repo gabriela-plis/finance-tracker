@@ -1,7 +1,6 @@
 spring:
-  data:
-    rabbitmq:
-      queue: mail-service.mail.send
+  rabbitmq:
+    queue: mail-service.mail.send
   mail:
     host: smtp.gmail.com
     port: 587

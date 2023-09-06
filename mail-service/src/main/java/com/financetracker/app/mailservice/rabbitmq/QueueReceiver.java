@@ -9,7 +9,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 @Component
-@RabbitListener(queues = "${spring.data.rabbitmq.queue}")
+@RabbitListener(queues = "${spring.rabbitmq.queue}")
 @RequiredArgsConstructor
 public class QueueReceiver {
 
