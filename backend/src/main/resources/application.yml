@@ -5,9 +5,9 @@ spring:
     routing-key: mail.send
   data:
     mongodb:
-      uri: mongodb://admin:verysecret@localhost:27017/database?authSource=admin
+      uri: mongodb://admin:verysecret@localhost:27017/finance_tracker?authSource=admin
       auto-index-creation: true
-      database: database
+      database: finance_tracker
 
 finance-tracker:
   jwt:
