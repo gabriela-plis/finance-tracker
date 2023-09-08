@@ -10,11 +10,11 @@ import static org.mapstruct.ReportingPolicy.ERROR;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ERROR)
 public interface CategoryMapper {
 
-    @Mapping(target = "user", ignore = true)
+    @Mapping(target = "users", expression = "java(new ArrayList<User>())")
     @Mapping(target = "id", ignore = true)
     Category toEntity(AddCategoryDTO category);
 
-    @Mapping(target = "user", ignore = true)
+    @Mapping(target = "users", ignore = true)
     Category toEntity(CategoryDTO category);
 
     CategoryDTO toDTO(Category category);

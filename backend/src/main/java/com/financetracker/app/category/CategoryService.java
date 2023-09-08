@@ -16,22 +16,38 @@ public class CategoryService {
     private final UserService userService;
 
     public List<Category> getUserCategories(String userId) {
-        return categoryRepository.findCategoriesByUserId(userId);
+        return categoryRepository.findCategoriesByUsersId(userId);
     }
 
     public void deleteCategory(String categoryId, String userId) {
-        categoryRepository.deleteCategoryByIdAndUserId(categoryId, userId);
+        Category category = categoryRepository.findCategoryByIdAndUsersId(categoryId, userId)
+            .orElseThrow(DocumentNotFoundException::new);
+
+        if (category.getUsers().size() == 1) {
+            categoryRepository.delete(category);
+        } else {
+            category.getUsers().remove(userService.getUserById(userId));
+            categoryRepository.save(category);
+        }
     }
 
     public void createCategory(String userId, AddCategoryDTO categoryToAdd) {
-        Category category = categoryMapper.toEntity(categoryToAdd);
-        category.setUser(userService.getUserById(userId));
+        Category category = categoryRepository.findByName(categoryToAdd.name())
+            .orElse(null);
 
-        categoryRepository.insert(category);
+        if (category != null) {
+            if (category.getUsers().stream().anyMatch(user -> user.getId().equals(userId))) return;
+            category.getUsers().add(userService.getUserById(userId));
+        }
+
+        Category newCategory = categoryMapper.toEntity(categoryToAdd);
+        newCategory.getUsers().add(userService.getUserById(userId));
+
+        categoryRepository.insert(newCategory);
     }
 
     public Category getCategory(String categoryId, String userId) {
-        return categoryRepository.findCategoryByIdAndUserId(categoryId, userId)
+        return categoryRepository.findCategoryByIdAndUsersId(categoryId, userId)
             .orElseThrow(DocumentNotFoundException::new);
     }
 }
