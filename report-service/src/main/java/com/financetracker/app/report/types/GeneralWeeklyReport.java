@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 @Builder
 public record GeneralWeeklyReport (
     UserEntity user,
-    DateRange dateRange,
+    DateInterval dateInterval,
     BigDecimal totalExpenses,
     ExpenseEntity largestExpense,
     BigDecimal averageDailyExpense,

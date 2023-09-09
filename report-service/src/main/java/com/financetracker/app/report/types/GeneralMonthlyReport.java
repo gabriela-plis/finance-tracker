@@ -10,11 +10,11 @@ import java.time.DayOfWeek;
 @Builder
 public record GeneralMonthlyReport(
     UserEntity user,
-    DateRange dateRange,
+    DateInterval dateInterval,
     BigDecimal totalExpenses,
     ExpenseEntity largestExpense,
     BigDecimal averageWeeklyExpense,
-    DateRange weekWithHighestExpenses,
+    DateInterval weekWithHighestExpenses,
     DayOfWeek dayWithHighestAverageExpense,
     BigDecimal totalIncomes,
     BigDecimal budgetSummary

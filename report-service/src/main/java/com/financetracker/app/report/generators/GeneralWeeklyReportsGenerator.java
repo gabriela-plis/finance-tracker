@@ -40,14 +40,15 @@ public class GeneralWeeklyReportsGenerator implements WeeklyReportsGenerator<Gen
         List<UserEntity> subscribers = userService.getReportSubscribers(GENERAL_WEEKLY_REPORT);
 
         List<GeneralWeeklyReport> reports = new ArrayList<>();
+        DateInterval dateInterval = new DateInterval(LocalDate.now().minusWeeks(1).withDayOfMonth(1), LocalDate.now().withDayOfMonth(1).minusDays(1));
 
         for(UserEntity subscriber : subscribers) {
-            List<IncomeEntity> incomes = incomeService.getLastMonthIncomes(subscriber.getId());
-            List<ExpenseEntity> expenses = expenseService.getLastMonthExpenses(subscriber.getId());
+            List<IncomeEntity> incomes = incomeService.getIncomesFromDateInterval(dateInterval.startDate(), dateInterval.endDate(), subscriber.getId());
+            List<ExpenseEntity> expenses = expenseService.getExpensesFromDateInterval(dateInterval.startDate(), dateInterval.endDate(), subscriber.getId());
 
             GeneralWeeklyReport report = GeneralWeeklyReport.builder()
                 .user(subscriber)
-                .dateRange(new DateRange(LocalDate.now().withDayOfMonth(1), LocalDate.now().minusMonths(1).withDayOfMonth(1)))
+                .dateInterval(dateInterval)
                 .totalExpenses(getTotalExpenses(expenses))
                 .largestExpense(getLargestExpense(expenses))
                 .averageDailyExpense(getAverageDailyExpense(expenses))

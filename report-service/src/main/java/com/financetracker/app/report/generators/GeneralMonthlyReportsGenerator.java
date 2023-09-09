@@ -5,7 +5,7 @@ import com.financetracker.app.expense.ExpenseEntity;
 import com.financetracker.app.expense.ExpenseService;
 import com.financetracker.app.income.IncomeEntity;
 import com.financetracker.app.income.IncomeService;
-import com.financetracker.app.report.types.DateRange;
+import com.financetracker.app.report.types.DateInterval;
 import com.financetracker.app.report.types.GeneralMonthlyReport;
 import com.financetracker.app.user.UserEntity;
 import com.financetracker.app.user.UserService;
@@ -18,7 +18,7 @@ import java.util.List;
 
 import static com.financetracker.app.expense.ExpenseOperationsPerformer.*;
 import static com.financetracker.app.income.IncomeOperationsPerformer.getTotalIncomes;
-import static com.financetracker.app.report.db.ReportType.*;
+import static com.financetracker.app.report.db.ReportType.GENERAL_MONTHLY_REPORT;
 
 @Component
 @RequiredArgsConstructor
@@ -41,14 +41,15 @@ public class GeneralMonthlyReportsGenerator implements MonthlyReportsGenerator<G
         List<UserEntity> subscribers = userService.getReportSubscribers(GENERAL_MONTHLY_REPORT);
 
         List<GeneralMonthlyReport> reports = new ArrayList<>();
+        DateInterval dateInterval = new DateInterval(LocalDate.now().minusMonths(1).withDayOfMonth(1), LocalDate.now().withDayOfMonth(1).minusDays(1));
 
         for(UserEntity subscriber : subscribers) {
-            List<IncomeEntity> incomes = incomeService.getLastMonthIncomes("");
-            List<ExpenseEntity> expenses = expenseService.getLastMonthExpenses("");
+            List<IncomeEntity> incomes = incomeService.getIncomesFromDateInterval(dateInterval.startDate(), dateInterval.endDate(), subscriber.getId());
+            List<ExpenseEntity> expenses = expenseService.getExpensesFromDateInterval(dateInterval.startDate(), dateInterval.endDate(), subscriber.getId());
 
             GeneralMonthlyReport report = GeneralMonthlyReport.builder()
                 .user(subscriber)
-                .dateRange(new DateRange(LocalDate.now().withDayOfMonth(1), LocalDate.now().minusMonths(1).withDayOfMonth(1)))
+                .dateInterval(dateInterval)
                 .totalExpenses(getTotalExpenses(expenses))
                 .largestExpense(getLargestExpense(expenses))
                 .averageWeeklyExpense(getAverageWeeklyExpense(expenses))

@@ -1,6 +1,6 @@
 package com.financetracker.app.expense;
 
-import com.financetracker.app.report.types.DateRange;
+import com.financetracker.app.report.types.DateInterval;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -26,7 +26,7 @@ public class ExpenseOperationsPerformer {
     public static ExpenseEntity getLargestExpense(List<ExpenseEntity> expenses) {
         return expenses.stream()
             .max((expense1, expense2) -> expense1.getPrice().compareTo(expense2.getPrice()))
-            .get();
+            .orElse(null);
     }
 
     public static BigDecimal getAverageDailyExpense(List<ExpenseEntity> expenses) {
@@ -43,7 +43,11 @@ public class ExpenseOperationsPerformer {
             .divide(BigDecimal.valueOf(4));
     }
 
-    public static DateRange getWeekWithHighestExpenses(List<ExpenseEntity> expenses) {
+    public static DateInterval getWeekWithHighestExpenses(List<ExpenseEntity> expenses) {
+        if (expenses.isEmpty()) {
+            return null;
+        }
+
         Map<LocalDate, BigDecimal> weeklyTotalExpenses = expenses.stream()
             .collect(Collectors.groupingBy(
                 expense -> expense.getDate().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)),
@@ -57,24 +61,29 @@ public class ExpenseOperationsPerformer {
 
         LocalDate endOfWeek = startOfWeek.plusDays(6);
 
-        return new DateRange(startOfWeek, endOfWeek);
+        return new DateInterval(startOfWeek, endOfWeek);
     }
 
     public static DayOfWeek getDayWithHighestAverageExpense(List<ExpenseEntity> expenses) {
-        Map<DayOfWeek, BigDecimal> averageExpensesByDay = expenses.stream()
+        if (expenses.isEmpty()) {
+            return null;
+        }
+
+        //TODO improve syntax
+
+        return expenses.stream()
             .collect(Collectors.groupingBy(
                 expense -> expense.getDate().getDayOfWeek(),
-                Collectors.mapping(ExpenseEntity::getPrice, Collectors.reducing(BigDecimal.ZERO, BigDecimal::add))
+                Collectors.mapping(ExpenseEntity::getPrice, Collectors.toList())
             ))
             .entrySet().stream()
-            .collect(Collectors.toMap(
-                Map.Entry::getKey,
-                entry -> entry.getValue().divide(BigDecimal.valueOf(entry.getKey().getValue()))
-            ));
-
-        return averageExpensesByDay.entrySet().stream()
-            .max(Map.Entry.comparingByValue())
-            .orElseThrow()
+            .max((set1, set2) -> {
+                Double average1 = set1.getValue().stream()
+                    .mapToDouble(BigDecimal::doubleValue).average().orElse(0);
+                Double average2 = set2.getValue().stream()
+                    .mapToDouble(BigDecimal::doubleValue).average().orElse(0);
+                return (int) (average1-average2);
+            }).orElse(null)
             .getKey();
     }
 }

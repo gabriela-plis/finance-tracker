@@ -1,18 +1,17 @@
 package com.financetracker.app.income;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class IncomeService {
-    private IncomeRepository IncomeRepository;
+    private final IncomeRepository IncomeRepository;
 
-    public List<IncomeEntity> getLastMonthIncomes(String userId) {
-        return null;
-    }
-
-    public List<IncomeEntity> getLastWeekIncomes(String userId) {
-        return null;
+    public List<IncomeEntity> getIncomesFromDateInterval(LocalDate startDate, LocalDate endDate, String userId) {
+        return IncomeRepository.findByDateBetweenAndUserId(startDate, endDate, userId);
     }
 }
