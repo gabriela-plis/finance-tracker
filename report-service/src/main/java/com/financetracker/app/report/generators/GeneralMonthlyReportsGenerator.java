@@ -5,10 +5,10 @@ import com.financetracker.app.expense.ExpenseEntity;
 import com.financetracker.app.expense.ExpenseService;
 import com.financetracker.app.income.IncomeEntity;
 import com.financetracker.app.income.IncomeService;
+import com.financetracker.app.report.db.ReportTypeService;
 import com.financetracker.app.report.types.DateInterval;
 import com.financetracker.app.report.types.GeneralMonthlyReport;
 import com.financetracker.app.user.UserEntity;
-import com.financetracker.app.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -26,7 +26,7 @@ public class GeneralMonthlyReportsGenerator implements MonthlyReportsGenerator<G
 
     private final IncomeService incomeService;
     private final ExpenseService expenseService;
-    private final UserService userService;
+    private final ReportTypeService reportService;
 
     @Override
     public List<GeneralMonthlyReport> generate() {
@@ -38,30 +38,33 @@ public class GeneralMonthlyReportsGenerator implements MonthlyReportsGenerator<G
     }
 
     private List<GeneralMonthlyReport> generateGeneralMonthlyReports() {
-        List<UserEntity> subscribers = userService.getReportSubscribers(GENERAL_MONTHLY_REPORT);
+        List<UserEntity> subscribers = reportService.getReportSubscribers(GENERAL_MONTHLY_REPORT);
 
         List<GeneralMonthlyReport> reports = new ArrayList<>();
         DateInterval dateInterval = new DateInterval(LocalDate.now().minusMonths(1).withDayOfMonth(1), LocalDate.now().withDayOfMonth(1).minusDays(1));
 
         for(UserEntity subscriber : subscribers) {
-            List<IncomeEntity> incomes = incomeService.getIncomesFromDateInterval(dateInterval.startDate(), dateInterval.endDate(), subscriber.getId());
-            List<ExpenseEntity> expenses = expenseService.getExpensesFromDateInterval(dateInterval.startDate(), dateInterval.endDate(), subscriber.getId());
-
-            GeneralMonthlyReport report = GeneralMonthlyReport.builder()
-                .user(subscriber)
-                .dateInterval(dateInterval)
-                .totalExpenses(getTotalExpenses(expenses))
-                .largestExpense(getLargestExpense(expenses))
-                .averageWeeklyExpense(getAverageWeeklyExpense(expenses))
-                .weekWithHighestExpenses(getWeekWithHighestExpenses(expenses))
-                .dayWithHighestAverageExpense(getDayWithHighestAverageExpense(expenses))
-                .totalIncomes(getTotalIncomes(incomes))
-                .budgetSummary(getTotalIncomes(incomes).subtract(getTotalExpenses(expenses)))
-                .build();
-
+            GeneralMonthlyReport report = generateReport(subscriber, dateInterval);
             reports.add(report);
         }
 
         return reports;
+    }
+
+    private GeneralMonthlyReport generateReport(UserEntity subscriber, DateInterval dateInterval) {
+        List<IncomeEntity> incomes = incomeService.getIncomesFromDateInterval(dateInterval.startDate(), dateInterval.endDate(), subscriber.getId());
+        List<ExpenseEntity> expenses = expenseService.getExpensesFromDateInterval(dateInterval.startDate(), dateInterval.endDate(), subscriber.getId());
+
+        return GeneralMonthlyReport.builder()
+            .user(subscriber)
+            .dateInterval(dateInterval)
+            .totalExpenses(getTotalExpenses(expenses))
+            .largestExpense(getLargestExpense(expenses))
+            .averageWeeklyExpense(getAverageWeeklyExpense(expenses))
+            .weekWithHighestExpenses(getWeekWithHighestExpenses(expenses))
+            .dayWithHighestAverageExpense(getDayWithHighestAverageExpense(expenses))
+            .totalIncomes(getTotalIncomes(incomes))
+            .budgetSummary(getTotalIncomes(incomes).subtract(getTotalExpenses(expenses)))
+            .build();
     }
 }
