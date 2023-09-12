@@ -4,9 +4,13 @@ import com.financetracker.app.report.types.DateInterval;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.Month;
+import java.time.Year;
 import java.time.temporal.TemporalAdjusters;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -15,8 +19,6 @@ import java.util.stream.Collectors;
 @Component
 public class ExpenseOperationsPerformer {
 
-    //TODO think about method, field names (expense vs expensePrice)
-    
     public static BigDecimal getTotalExpenses(List<ExpenseEntity> expenses) {
         return expenses.stream()
             .map(ExpenseEntity::getPrice)
@@ -25,22 +27,22 @@ public class ExpenseOperationsPerformer {
 
     public static ExpenseEntity getLargestExpense(List<ExpenseEntity> expenses) {
         return expenses.stream()
-            .max((expense1, expense2) -> expense1.getPrice().compareTo(expense2.getPrice()))
+            .max(Comparator.comparing(ExpenseEntity::getPrice))
             .orElse(null);
     }
 
-    public static BigDecimal getAverageDailyExpense(List<ExpenseEntity> expenses) {
+    public static BigDecimal getAverageDailyExpense(List<ExpenseEntity> expenses, Month month) {
         return expenses.stream()
             .map(ExpenseEntity::getPrice)
             .reduce(BigDecimal.ZERO, BigDecimal::add)
-            .divide(BigDecimal.valueOf(LocalDate.now().getMonth().length(false))); //TODO determine leap year
+            .divide(BigDecimal.valueOf(month.length(Year.now().isLeap())), RoundingMode.HALF_UP);
     }
 
     public static BigDecimal getAverageWeeklyExpense(List<ExpenseEntity> expenses) {
         return expenses.stream()
             .map(ExpenseEntity::getPrice)
             .reduce(BigDecimal.ZERO, BigDecimal::add)
-            .divide(BigDecimal.valueOf(4));
+            .divide(BigDecimal.valueOf(4), RoundingMode.HALF_UP);
     }
 
     public static DateInterval getWeekWithHighestExpenses(List<ExpenseEntity> expenses) {
@@ -56,8 +58,8 @@ public class ExpenseOperationsPerformer {
 
         LocalDate startOfWeek = weeklyTotalExpenses.entrySet().stream()
             .max(Map.Entry.comparingByValue())
-            .orElseThrow()
-            .getKey();
+            .map(Map.Entry::getKey)
+            .orElseThrow(IllegalArgumentException::new);
 
         LocalDate endOfWeek = startOfWeek.plusDays(6);
 
@@ -69,21 +71,20 @@ public class ExpenseOperationsPerformer {
             return null;
         }
 
-        //TODO improve syntax
-
-        return expenses.stream()
+        Map<DayOfWeek, List<BigDecimal>> expensesPriceByDay = expenses.stream()
             .collect(Collectors.groupingBy(
                 expense -> expense.getDate().getDayOfWeek(),
                 Collectors.mapping(ExpenseEntity::getPrice, Collectors.toList())
+            ));
+
+        return expensesPriceByDay.entrySet().stream()
+            .max(Comparator.comparingDouble(entry ->
+                entry.getValue().stream()
+                    .mapToDouble(BigDecimal::doubleValue)
+                    .average()
+                    .orElse(0)
             ))
-            .entrySet().stream()
-            .max((set1, set2) -> {
-                Double average1 = set1.getValue().stream()
-                    .mapToDouble(BigDecimal::doubleValue).average().orElse(0);
-                Double average2 = set2.getValue().stream()
-                    .mapToDouble(BigDecimal::doubleValue).average().orElse(0);
-                return (int) (average1-average2);
-            }).orElse(null)
-            .getKey();
+            .map(Map.Entry::getKey)
+            .orElse(null);
     }
 }
