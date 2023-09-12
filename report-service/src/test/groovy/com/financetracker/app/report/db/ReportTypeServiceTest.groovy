@@ -1,9 +1,5 @@
-package com.financetracker.app.report
+package com.financetracker.app.report.db
 
-import com.financetracker.app.report.db.ReportType
-import com.financetracker.app.report.db.ReportTypeEntity
-import com.financetracker.app.report.db.ReportTypeRepository
-import com.financetracker.app.report.db.ReportTypeService
 import com.financetracker.app.user.Role
 import com.financetracker.app.user.UserEntity
 import com.financetracker.app.utils.DocumentNotFoundException
