@@ -12,9 +12,11 @@ import com.financetracker.app.user.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.financetracker.app.expense.ExpenseOperationsPerformer.*;
 import static com.financetracker.app.income.IncomeOperationsPerformer.getTotalIncomes;
@@ -27,6 +29,7 @@ public class GeneralMonthlyReportsGenerator implements MonthlyReportsGenerator<G
     private final IncomeService incomeService;
     private final ExpenseService expenseService;
     private final ReportTypeService reportService;
+    private final Clock clock;
 
     @Override
     public List<GeneralMonthlyReport> generate() {
@@ -41,21 +44,30 @@ public class GeneralMonthlyReportsGenerator implements MonthlyReportsGenerator<G
         List<UserEntity> subscribers = reportService.getReportSubscribers(GENERAL_MONTHLY_REPORT);
 
         List<GeneralMonthlyReport> reports = new ArrayList<>();
-        DateInterval dateInterval = new DateInterval(LocalDate.now().minusMonths(1).withDayOfMonth(1), LocalDate.now().withDayOfMonth(1).minusDays(1));
+        DateInterval dateInterval = getDateInterval();
 
         for(UserEntity subscriber : subscribers) {
-            GeneralMonthlyReport report = generateReport(subscriber, dateInterval);
-            reports.add(report);
+            Optional<GeneralMonthlyReport> report = generateReport(subscriber, dateInterval);
+
+            if (report.isEmpty()) {
+                continue;
+            }
+
+            reports.add(report.get());
         }
 
         return reports;
     }
 
-    private GeneralMonthlyReport generateReport(UserEntity subscriber, DateInterval dateInterval) {
+    private Optional<GeneralMonthlyReport> generateReport(UserEntity subscriber, DateInterval dateInterval) {
         List<IncomeEntity> incomes = incomeService.getIncomesFromDateInterval(dateInterval.startDate(), dateInterval.endDate(), subscriber.getId());
         List<ExpenseEntity> expenses = expenseService.getExpensesFromDateInterval(dateInterval.startDate(), dateInterval.endDate(), subscriber.getId());
 
-        return GeneralMonthlyReport.builder()
+        if (expenses.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(GeneralMonthlyReport.builder()
             .user(subscriber)
             .dateInterval(dateInterval)
             .totalExpenses(getTotalExpenses(expenses))
@@ -65,6 +77,13 @@ public class GeneralMonthlyReportsGenerator implements MonthlyReportsGenerator<G
             .dayWithHighestAverageExpense(getDayWithHighestAverageExpense(expenses))
             .totalIncomes(getTotalIncomes(incomes))
             .budgetSummary(getTotalIncomes(incomes).subtract(getTotalExpenses(expenses)))
-            .build();
+            .build());
+    }
+
+    private DateInterval getDateInterval() {
+        LocalDate startDate = LocalDate.now(clock).minusMonths(1).withDayOfMonth(1);
+        LocalDate endDate = LocalDate.now(clock).withDayOfMonth(1).minusDays(1);
+
+        return new DateInterval(startDate, endDate);
     }
 }
