@@ -37,6 +37,7 @@ public class MailService {
 
     private <T> Object getFieldValue(Field field, T report) {
         try {
+            field.setAccessible(true);
             return field.get(report);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
