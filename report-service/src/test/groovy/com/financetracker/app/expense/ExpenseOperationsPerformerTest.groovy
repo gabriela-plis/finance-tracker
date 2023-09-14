@@ -5,7 +5,6 @@ import spock.lang.Specification
 
 import java.time.DayOfWeek
 import java.time.LocalDate
-import java.time.Month
 
 import static com.financetracker.app.expense.ExpenseOperationsPerformer.*
 
@@ -24,6 +23,17 @@ class ExpenseOperationsPerformerTest extends Specification {
         getEmptyList() | 0
     }
 
+    def "should throw IllegalArgumentException when expenses are null for get total expenses"() {
+        given:
+        List<ExpenseEntity> expenses = null
+
+        when:
+        getTotalExpenses(expenses)
+
+        then:
+        thrown(IllegalArgumentException)
+    }
+
     def "should get largest expense"() {
         given:
         List<ExpenseEntity> expenses = getExpenses()
@@ -39,23 +49,34 @@ class ExpenseOperationsPerformerTest extends Specification {
         }
     }
 
-    def "should return null as largest expense if list is empty"() {
+    def "should throw IllegalStateException when list for get largest expense is empty"() {
         given:
         List<ExpenseEntity> expenses = getEmptyList()
 
         when:
-        ExpenseEntity result = getLargestExpense(expenses)
+        getLargestExpense(expenses)
 
         then:
-        result == null
+        thrown(IllegalStateException)
+    }
+
+    def "should throw IllegalArgumentException when expenses are null for get largest expense"() {
+        given:
+        List<ExpenseEntity> expenses = null
+
+        when:
+        getLargestExpense(expenses)
+
+        then:
+        thrown(IllegalArgumentException)
     }
 
     def "should get average daily expense"() {
         given:
-        Month month = Month.SEPTEMBER
+        int totalDays = 30
 
         when:
-        BigDecimal result = getAverageDailyExpense(expenses, month)
+        BigDecimal result = getAverageDailyExpense(expenses, totalDays)
 
         then:
         result == expected
@@ -64,6 +85,18 @@ class ExpenseOperationsPerformerTest extends Specification {
         expenses       | expected
         getExpenses()  | 7.71
         getEmptyList() | 0
+    }
+
+    def "should throw IllegalArgumentException when expenses are null for get average daily expense"() {
+        given:
+        List<ExpenseEntity> expenses = null
+        int totalDays = 5
+
+        when:
+        getAverageDailyExpense(expenses, totalDays)
+
+        then:
+        thrown(IllegalArgumentException)
     }
 
     def "should get average weekly expense"() {
@@ -77,6 +110,17 @@ class ExpenseOperationsPerformerTest extends Specification {
         expenses       | expected
         getExpenses()  | 57.86
         getEmptyList() | 0
+    }
+
+    def "should throw IllegalArgumentException when expenses are null for get average weekly expense"() {
+        given:
+        List<ExpenseEntity> expenses = null
+
+        when:
+        getAverageWeeklyExpense(expenses)
+
+        then:
+        thrown(IllegalArgumentException)
     }
 
     def "should get week with highest expenses"() {
@@ -93,6 +137,28 @@ class ExpenseOperationsPerformerTest extends Specification {
         }
     }
 
+    def "should throw IllegalStateException when list for get week with highest expenses is empty"() {
+        given:
+        List<ExpenseEntity> expenses = getEmptyList()
+
+        when:
+        getWeekWithHighestExpenses(expenses)
+
+        then:
+        thrown(IllegalStateException)
+    }
+
+    def "should throw IllegalArgumentException when expenses are null for get week with highest expenses"() {
+        given:
+        List<ExpenseEntity> expenses = null
+
+        when:
+        getWeekWithHighestExpenses(expenses)
+
+        then:
+        thrown(IllegalArgumentException)
+    }
+
     def "should get day with highest average expense"() {
         when:
         DayOfWeek result = getDayWithHighestAverageExpense(expenses)
@@ -103,7 +169,28 @@ class ExpenseOperationsPerformerTest extends Specification {
         where:
         expenses       | expected
         getExpenses()  | DayOfWeek.FRIDAY
-        getEmptyList() | null
+    }
+
+    def "should throw IllegalStateException when list for get day with highest average expense is empty"() {
+        given:
+        List<ExpenseEntity> expenses = getEmptyList()
+
+        when:
+        getDayWithHighestAverageExpense(expenses)
+
+        then:
+        thrown(IllegalStateException)
+    }
+
+    def "should throw IllegalArgumentException when expenses are null for get day with highest average expense"() {
+        given:
+        List<ExpenseEntity> expenses = null
+
+        when:
+        getDayWithHighestAverageExpense(expenses)
+
+        then:
+        thrown(IllegalArgumentException)
     }
 
     private List<ExpenseEntity> getExpenses() {

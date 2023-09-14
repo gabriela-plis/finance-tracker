@@ -19,6 +19,17 @@ class IncomeOperationsPerformerTest extends Specification {
         result == 1200.92
     }
 
+    def "should throw IllegalArgumentException when incomes are null for get total incomes"() {
+        given:
+        List<IncomeEntity> incomes = null
+
+        when:
+        getTotalIncomes(incomes)
+
+        then:
+        thrown(IllegalArgumentException)
+    }
+
     private List<IncomeEntity> getIncomes() {
         return List.of(
             getIncome(LocalDate.of(2023, 9, 1), 1000.67),
