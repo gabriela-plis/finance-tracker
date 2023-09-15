@@ -24,16 +24,16 @@ public class ReportsExecutor {
 
     @Scheduled(cron = "0 0 8 1 1/1 *")
     public void executeMonthlyReports() {
-        List<ReportsGenerator<?>> generators = getGenerators(MonthlyReportsGenerator.class);
-
-        Map<Template, List<? extends Report>> reports = generateReports(generators);
-        List<MailDTO> mails = createMails(reports);
-        sendMails(mails);
+        executeReports(MonthlyReportsGenerator.class);
     }
 
     @Scheduled(cron = "0 0 8 * * MON")
     public void executeWeeklyReports() {
-        List<ReportsGenerator<?>> generators = getGenerators(WeeklyReportsGenerator.class);
+        executeReports(WeeklyReportsGenerator.class);
+    }
+
+    private <T extends ReportsGenerator<?>> void executeReports(Class<T> clazz) {
+        List<ReportsGenerator<?>> generators = getGenerators(clazz);
 
         Map<Template, List<? extends Report>> reports = generateReports(generators);
         List<MailDTO> mails = createMails(reports);
