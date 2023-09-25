@@ -318,8 +318,8 @@ class IncomeIntegrationTest extends IntegrationTestConfig {
 
     private List<Category> getCategories() {
         return List.of(
-            new Category("1", "Food", getUser()),
-            new Category("2", "Healthcare", getUser()),
+            new Category("1", "Food", List.of(getUser())),
+            new Category("2", "Healthcare", List.of(getUser())),
         )
     }
 
