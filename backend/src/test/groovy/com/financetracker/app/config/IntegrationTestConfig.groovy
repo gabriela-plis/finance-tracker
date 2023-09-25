@@ -4,6 +4,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 import org.testcontainers.containers.GenericContainer
+import org.testcontainers.containers.RabbitMQContainer
 import org.testcontainers.containers.wait.strategy.Wait
 import org.testcontainers.spock.Testcontainers
 import spock.lang.Specification
@@ -29,4 +30,15 @@ class IntegrationTestConfig extends Specification {
         registry.add("spring.data.mongodb.password", () -> "admin")
     }
 
+    static RabbitMQContainer rabbitmq = new RabbitMQContainer("rabbitmq:3-management-alpine")
+
+    @DynamicPropertySource
+    static void configure(DynamicPropertyRegistry registry) {
+        rabbitmq.start()
+
+        registry.add("spring.rabbitmq.host", rabbitmq::getHost)
+        registry.add("spring.rabbitmq.port", rabbitmq::getAmqpPort)
+        registry.add("spring.rabbitmq.username", rabbitmq::getAdminUsername)
+        registry.add("spring.rabbitmq.password", rabbitmq::getAdminPassword)
+    }
 }
