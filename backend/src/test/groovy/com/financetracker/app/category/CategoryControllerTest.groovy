@@ -165,14 +165,14 @@ class CategoryControllerTest extends MvcTestsConfig {
 
 
     private Category getCategory() {
-        return new Category("1", "Food", getUser())
+        return new Category("1", "Food", List.of(getUser()))
     }
 
     private List<Category> getCategories() {
         return List.of(
-            new Category("1", "Food", getUser()),
-            new Category("2", "Healthcare", getUser()),
-            new Category("3", "Transportation", getUser()),
+            new Category("1", "Food", List.of(getUser())),
+            new Category("2", "Healthcare", List.of(getUser())),
+            new Category("3", "Transportation", List.of(getUser())),
         )
     }
 

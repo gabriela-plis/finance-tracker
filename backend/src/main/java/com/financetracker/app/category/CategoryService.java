@@ -38,12 +38,12 @@ public class CategoryService {
         if (category != null) {
             if (category.getUsers().stream().anyMatch(user -> user.getId().equals(userId))) return;
             category.getUsers().add(userService.getUserById(userId));
+        } else {
+            Category newCategory = categoryMapper.toEntity(categoryToAdd);
+            newCategory.getUsers().add(userService.getUserById(userId));
+
+            categoryRepository.insert(newCategory);
         }
-
-        Category newCategory = categoryMapper.toEntity(categoryToAdd);
-        newCategory.getUsers().add(userService.getUserById(userId));
-
-        categoryRepository.insert(newCategory);
     }
 
     public Category getCategory(String categoryId, String userId) {

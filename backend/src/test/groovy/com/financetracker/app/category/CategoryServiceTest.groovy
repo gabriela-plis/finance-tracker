@@ -24,7 +24,7 @@ class CategoryServiceTest extends Specification {
         List<Category> result = categoryService.getUserCategories(userId)
 
         then:
-        1 * categoryRepository.findCategoriesByUserId(userId) >> getCategories()
+        1 * categoryRepository.findCategoriesByUsersId(userId) >> getCategories()
 
         and:
         result == getCategories()
@@ -40,7 +40,7 @@ class CategoryServiceTest extends Specification {
         Category result = categoryService.getCategory(categoryId, userId)
 
         then:
-        1 * categoryRepository.findCategoryByIdAndUserId(categoryId, userId) >> Optional.of(getCategory())
+        1 * categoryRepository.findCategoryByIdAndUsersId(categoryId, userId) >> Optional.of(getCategory())
 
         and:
         result == getCategory()
@@ -55,7 +55,7 @@ class CategoryServiceTest extends Specification {
         categoryService.getCategory(categoryId, userId)
 
         then:
-        1 * categoryRepository.findCategoryByIdAndUserId(categoryId, userId) >> Optional.empty()
+        1 * categoryRepository.findCategoryByIdAndUsersId(categoryId, userId) >> Optional.empty()
 
         and:
         thrown(DocumentNotFoundException)
@@ -70,7 +70,23 @@ class CategoryServiceTest extends Specification {
         categoryService.deleteCategory(categoryId, userId)
 
         then:
-        1 * categoryRepository.deleteCategoryByIdAndUserId(categoryId, userId)
+        1 * categoryRepository.findCategoryByIdAndUsersId(categoryId, userId) >> Optional.of(getCategory())
+        1 * categoryRepository.delete(_ as Category)
+    }
+
+    def "should delete user attachment from category"() {
+        given:
+        String categoryId = "1"
+        String userId = "1"
+        Category category = new Category("1", "Food", new ArrayList<>(List.of(getUser(), getUser())))
+
+        when:
+        categoryService.deleteCategory(categoryId, userId)
+
+        then:
+        1 * categoryRepository.findCategoryByIdAndUsersId(categoryId, userId) >> Optional.of(category)
+        1 * userService.getUserById(userId) >> getUser()
+        1 * categoryRepository.save(category)
     }
 
     def "should add category"() {
@@ -78,25 +94,53 @@ class CategoryServiceTest extends Specification {
         String userId = 1
         AddCategoryDTO category = new AddCategoryDTO("Food")
 
-        userService.getUserById(userId) >> getUser()
-
         when:
         categoryService.createCategory(userId, category)
 
         then:
-        1 * userService.getUserById(userId)
+        1 * categoryRepository.findByName(category.name()) >> Optional.empty()
+        1 * userService.getUserById(userId) >> getUser()
         1 * categoryRepository.insert(_ as Category)
     }
 
+    def "should attach user to existing category when someone want add the same category"() {
+        given:
+        String userId = 1
+        AddCategoryDTO categoryToAdd = new AddCategoryDTO("Food")
+        Category category = new Category("1", "Food", new ArrayList<>())
+
+        when:
+        categoryService.createCategory(userId, categoryToAdd)
+
+        then:
+        1 * categoryRepository.findByName(categoryToAdd.name()) >> Optional.of(category)
+        1 * userService.getUserById(userId) >> getUser()
+        0 * categoryRepository.insert()
+    }
+
+    def "should stop adding category if category to add already exists and user is attached to it" () {
+        given:
+        String userId = 1
+        AddCategoryDTO categoryToAdd = new AddCategoryDTO("Food")
+
+        when:
+        categoryService.createCategory(userId, categoryToAdd)
+
+        then:
+        1 * categoryRepository.findByName(categoryToAdd.name()) >> Optional.of(getCategory())
+        0 * userService.getUserById(userId)
+        0 * categoryRepository.insert(_ as Category)
+    }
+
     private Category getCategory() {
-        return new Category("1", "Food", getUser())
+        return new Category("1", "Food", List.of(getUser()))
     }
 
     private List<Category> getCategories() {
         return List.of(
-            new Category("1", "Food", getUser()),
-            new Category("2", "Healthcare", getUser()),
-            new Category("3", "Transportation", getUser()),
+            new Category("1", "Food", List.of(getUser())),
+            new Category("2", "Healthcare", List.of(getUser())),
+            new Category("3", "Transportation", List.of(getUser())),
         )
     }
 
