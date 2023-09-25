@@ -153,7 +153,7 @@ class AuthenticationIntegrationTest extends IntegrationTestConfig {
         given:
         LinkedHashMap<String, Serializable> loginData = [
             email   : correctEmail,
-            password: correctPassword
+            password: "Anne!Anneanne123"
         ]
 
         when:

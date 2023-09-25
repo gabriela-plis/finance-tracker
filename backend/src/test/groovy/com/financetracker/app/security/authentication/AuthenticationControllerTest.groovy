@@ -1,6 +1,10 @@
 package com.financetracker.app.security.authentication
 
+import com.financetracker.api.mail.MailDTO
 import com.financetracker.app.config.MvcTestsConfig
+import com.financetracker.app.mail.MailService
+import com.financetracker.app.user.User
+import com.financetracker.app.user.UserService
 import com.financetracker.app.utils.exception.custom.UserAlreadyExistException
 import org.spockframework.spring.SpringBean
 import org.springframework.beans.factory.annotation.Autowired
@@ -29,6 +33,12 @@ class AuthenticationControllerTest extends MvcTestsConfig {
     @SpringBean
     AuthenticationService authenticationService = Mock()
 
+    @SpringBean
+    UserService userService = Mock()
+
+    @SpringBean
+    MailService mailService = Mock()
+
     def "should return 200 (OK) when user is registered"() {
         given:
         LinkedHashMap<String, Serializable> userToRegister = [
@@ -36,6 +46,8 @@ class AuthenticationControllerTest extends MvcTestsConfig {
             email   : correctEmail,
             password: correctPassword
         ]
+        MailDTO mail = GroovyMock()
+        User user = GroovyMock()
 
         when:
         def result = mvc
@@ -47,6 +59,9 @@ class AuthenticationControllerTest extends MvcTestsConfig {
 
         then:
         1 * authenticationService.registerUser(_ as RegisterDetailsDTO)
+        1 * userService.getUserByEmail(correctEmail) >> user
+        1 * mailService.createGreetingMail(_ as User) >> mail
+        1 * mailService.sendMail(mail)
 
         and:
         result.andExpect(status().isOk())

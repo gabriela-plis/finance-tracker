@@ -1,7 +1,6 @@
 package com.financetracker.app.security.authentication;
 
 import com.financetracker.api.mail.MailDTO;
-import com.financetracker.api.mail.Template;
 import com.financetracker.app.mail.MailService;
 import com.financetracker.app.user.UserService;
 import jakarta.validation.Valid;
@@ -23,15 +22,16 @@ public class AuthenticationController {
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody @Valid RegisterDetailsDTO registerDetails) {
         authenticationService.registerUser(registerDetails);
+
+        MailDTO mail = mailService.createGreetingMail(userService.getUserByEmail(registerDetails.email()));
+        mailService.sendMail(mail);
+
         return ResponseEntity.ok("User registered successfully");
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody @Valid LoginDetailsDTO loginDetails) {
         ResponseCookie jwtCookie = authenticationService.loginUser(loginDetails);
-
-        MailDTO mail = mailService.createGreetingMail(userService.getUserByEmail(loginDetails.email()), Template.GREETING, "abc");
-        mailService.sendMail(mail);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
