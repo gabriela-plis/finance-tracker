@@ -9,6 +9,7 @@ import com.financetracker.app.report.db.ReportTypeService;
 import com.financetracker.app.report.types.*;
 import com.financetracker.app.user.UserEntity;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.time.Clock;
 import java.time.DayOfWeek;
@@ -24,6 +25,7 @@ import static com.financetracker.app.expense.ExpenseOperationsPerformer.getTotal
 import static com.financetracker.app.income.IncomeOperationsPerformer.getTotalIncomes;
 import static com.financetracker.app.report.db.ReportType.*;
 
+@Component
 @RequiredArgsConstructor
 public class GeneralWeeklyReportsGenerator implements WeeklyReportsGenerator<GeneralWeeklyReport> {
 
