@@ -1,6 +1,6 @@
 rootProject.name = 'finance-tracker'
 
-include 'backend'
+include 'api-service'
 include 'report-service'
 include 'mail-service'
 include 'mail-api'

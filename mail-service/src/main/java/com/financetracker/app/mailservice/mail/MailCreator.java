@@ -1,4 +1,4 @@
-package com.financetracker.app.mailservice;
+package com.financetracker.app.mailservice.mail;
 
 import com.financetracker.api.mail.MailDTO;
 import com.financetracker.api.mail.Template;
@@ -20,9 +20,9 @@ public class MailCreator {
     private final TemplateEngine templateEngine;
 
     @Value("${spring.mail.username}")
-    private String sender;
+    private final String sender;
 
-    public MimeMessage createMessage(MailDTO mail) {
+    public MimeMessage createMailToSend(MailDTO mail) {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 
         try {
