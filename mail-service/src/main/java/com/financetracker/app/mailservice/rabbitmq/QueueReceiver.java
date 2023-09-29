@@ -1,7 +1,9 @@
 package com.financetracker.app.mailservice.rabbitmq;
 
 import com.financetracker.api.mail.MailDTO;
-import com.financetracker.app.mailservice.MailService;
+import com.financetracker.app.mailservice.mail.MailCreator;
+import com.financetracker.app.mailservice.mail.MailSender;
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -13,10 +15,12 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class QueueReceiver {
 
-    private final MailService mailService;
+    private final MailCreator mailCreator;
+    private final MailSender mailSender;
 
     @RabbitHandler
     public void receive(@Payload MailDTO mail) {
-        mailService.sendMail(mail);
+        MimeMessage mailToSend = mailCreator.createMailToSend(mail);
+        mailSender.sendMail(mailToSend);
     }
 }
