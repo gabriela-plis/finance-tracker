@@ -1,8 +1,6 @@
 spring:
   rabbitmq:
-    queue: mail-service.mail.send
     exchange: mail-service.mail.ex
-    routing-key: mail.send
   data:
     mongodb:
       uri: mongodb://admin:verysecret@localhost:27017/finance_tracker?authSource=admin

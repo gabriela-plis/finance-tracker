@@ -1,6 +1,8 @@
 spring:
   rabbitmq:
     queue: mail-service.mail.send
+    exchange: mail-service.mail.ex
+    routing-key: mail.send
   mail:
     host: smtp.gmail.com
     port: 587
@@ -10,6 +12,5 @@ spring:
       auth: true
       starttls.enable: true
       ssl.trust: smtp.gmail.com
-    default-encoding: UTF-8
 server:
   port: 8181
