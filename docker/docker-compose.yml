@@ -21,7 +21,9 @@ services:
       - '15672:15672'
     volumes:
       - rabbit-data:/var/lib/rabbitmq
-  app:
+      - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+      - ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
+  api-service:
     depends_on:
       - mongodb
       - rabbitmq
@@ -29,7 +31,21 @@ services:
     container_name: app
     ports:
       - "8080:8080"
-
+  report-service:
+    depends_on:
+      - mongodb
+      - rabbitmq
+    build: ../report-service
+    container_name: report-service
+    ports:
+      - "8181:8181"
+  mail-service:
+    depends_on:
+      - rabbitmq
+    build: ../mail-service
+    container_name: mail-service
+    ports:
+      - "8282:8282"
 
 volumes:
   mongo-data:
