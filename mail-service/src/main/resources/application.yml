@@ -6,11 +6,11 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${MY_EMAIL}
-    password: ${MY_EMAIL_PASSWORD}
+    username: finance.tracker3@gmail.com
+    password: 'ecypeltlquimjqse'
     properties.mail.smtp:
       auth: true
       starttls.enable: true
       ssl.trust: smtp.gmail.com
 server:
-  port: 8181
+  port: 8282

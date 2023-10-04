@@ -15,8 +15,11 @@ public class QueueSender {
     @Value("${spring.rabbitmq.exchange}")
     private String exchange;
 
+    @Value("${spring.rabbitmq.routing-key}")
+    private String routingKey;
+
     public void send(MailDTO mail) {
-        rabbitTemplate.convertAndSend(exchange, mail);
+        rabbitTemplate.convertAndSend(exchange, routingKey, mail);
     }
 
 }

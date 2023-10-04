@@ -1,10 +1,11 @@
 spring:
   rabbitmq:
     exchange: mail-service.mail.ex
+    routing-key: mail.send
   data:
     mongodb:
       uri: mongodb://admin:verysecret@localhost:27017/finance_tracker?authSource=admin
       auto-index-creation: true
       database: finance_tracker
 server:
-  port: 8282
+  port: 8181

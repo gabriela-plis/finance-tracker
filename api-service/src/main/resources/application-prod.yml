@@ -1,4 +1,6 @@
 spring:
+  rabbitmq:
+    host: rabbitmq
   data:
     mongodb:
       uri: mongodb://admin:verysecret@mongo-db:27017/finance_tracker?authSource=admin
