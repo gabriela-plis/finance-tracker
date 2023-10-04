@@ -27,8 +27,8 @@ services:
     depends_on:
       - mongodb
       - rabbitmq
-    build: ../backend
-    container_name: app
+    build: ../api-service
+    container_name: api-service
     ports:
       - "8080:8080"
   report-service:
