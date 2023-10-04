@@ -6,11 +6,11 @@ import org.springframework.mail.javamail.JavaMailSender;
 
 import static org.mockito.Mockito.*;
 
-public class MailSenderTest {
+public class MailDelivererTest {
 
     private final JavaMailSender javaMailSender = mock();
 
-    private final MailSender mailSender = new MailSender(javaMailSender);
+    private final MailDeliverer mailDeliverer = new MailDeliverer(javaMailSender);
 
     @Test
     public void should_send_mail() {
@@ -18,7 +18,7 @@ public class MailSenderTest {
         MimeMessage mailToSend = mock();
 
 //        when
-        mailSender.sendMail(mailToSend);
+        mailDeliverer.sendMail(mailToSend);
 
 //        then
         verify(javaMailSender, times(1)).send(mailToSend);
