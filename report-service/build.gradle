@@ -8,10 +8,6 @@ plugins {
 group = rootProject.group
 version = rootProject.version
 
-//java {
-//	sourceCompatibility = '17'
-//}
-
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
@@ -38,6 +34,6 @@ dependencies {
 	testImplementation 'org.spockframework:spock-spring:2.4-M1-groovy-4.0'
 }
 
-tasks.named('test') {
+test {
 	useJUnitPlatform()
 }

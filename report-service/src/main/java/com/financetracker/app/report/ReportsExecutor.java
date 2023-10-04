@@ -37,6 +37,9 @@ public class ReportsExecutor {
 
         Map<Template, List<? extends Report>> reports = generateReports(generators);
         List<MailDTO> mails = createMails(reports);
+
+        if (mails.isEmpty()) return;
+
         sendMails(mails);
     }
 
