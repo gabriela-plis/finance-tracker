@@ -59,6 +59,23 @@ class ReportsExecutorTest extends Specification {
         2 * mailService.sendMail(mail)
     }
 
+    def "should stop execute weekly reports if list of generated mails is empty"() {
+        given:
+        List<GeneralWeeklyReport> reports = List.of()
+        MailDTO mail = GroovyMock()
+        Template template = Template.GENERAL_WEEKLY_REPORT
+
+        when:
+        executor.executeWeeklyReports()
+
+        then:
+        1 * generalWeeklyReportsGenerator.generate() >> reports
+        0 * generalMonthlyReportsGenerator.generate()
+        1 * generalWeeklyReportsGenerator.getTemplate() >> template
+        0 * mailService.createMail(_ as Report, template, template.title)
+        0 * mailService.sendMail(mail)
+    }
+
     private GeneralMonthlyReport getMonthlyReport() {
         return GeneralMonthlyReport.builder()
             .user(getUser())
